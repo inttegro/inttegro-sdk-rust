@@ -2,8 +2,8 @@
 
 use crate::generated::*;
 use crate::{
-    Client, CreateFileRequest, FileDownload, FulfillUploadRequest, OpenFileLinkRequest,
-    RequestOptions, RequestSpec, Result,
+    BalanceSnapshot, Client, CountrySpecifications, CreateFileRequest, FileDownload,
+    FulfillUploadRequest, OpenFileLinkRequest, RequestOptions, RequestSpec, Result,
 };
 
 /// Operations for Inttegro apps.
@@ -174,14 +174,11 @@ impl Balances {
     }
 
     /// Retrieve your balance
-    pub async fn get(&self) -> Result<std::collections::HashMap<String, CurrencyBalanceSnapshot>> {
+    pub async fn get(&self) -> Result<BalanceSnapshot> {
         self.get_with_options(RequestOptions::default()).await
     }
     /// Retrieve your balance with per-request options.
-    pub async fn get_with_options(
-        &self,
-        options: RequestOptions,
-    ) -> Result<std::collections::HashMap<String, CurrencyBalanceSnapshot>> {
+    pub async fn get_with_options(&self, options: RequestOptions) -> Result<BalanceSnapshot> {
         let body = serde_json::json!({});
         self.client
             .request_resource(
@@ -3185,16 +3182,14 @@ impl Specifications {
     }
 
     /// Get country specifications
-    pub async fn countries(
-        &self,
-    ) -> Result<std::collections::HashMap<String, CountrySpecification>> {
+    pub async fn countries(&self) -> Result<CountrySpecifications> {
         self.countries_with_options(RequestOptions::default()).await
     }
     /// Get country specifications with per-request options.
     pub async fn countries_with_options(
         &self,
         options: RequestOptions,
-    ) -> Result<std::collections::HashMap<String, CountrySpecification>> {
+    ) -> Result<CountrySpecifications> {
         let body = serde_json::json!({});
         self.client
             .request_resource(
