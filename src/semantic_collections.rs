@@ -77,7 +77,7 @@ impl CustomData {
         if let Some(key) = self
             .0
             .keys()
-            .find(|key| key.as_bytes().len() > CUSTOM_DATA_MAX_KEY_BYTES)
+            .find(|key| key.len() > CUSTOM_DATA_MAX_KEY_BYTES)
         {
             return Err(SemanticCollectionError::CustomDataKeyTooLong(key.clone()));
         }
@@ -231,7 +231,7 @@ fn validate_json_custom_data(
 ) -> Result<(), SemanticCollectionError> {
     if let Some(key) = values
         .keys()
-        .find(|key| key.as_bytes().len() > CUSTOM_DATA_MAX_KEY_BYTES)
+        .find(|key| key.len() > CUSTOM_DATA_MAX_KEY_BYTES)
     {
         return Err(SemanticCollectionError::CustomDataKeyTooLong(key.clone()));
     }

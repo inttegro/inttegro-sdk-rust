@@ -2427,10 +2427,6 @@ pub struct FinalizeOrderRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub app_customer_local_fingerprint: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub app_local_fingerprint: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived_at: Option<String>,
     pub created_at: String,
     pub currency: String,
@@ -2453,8 +2449,6 @@ pub struct FinancialAccount {
     pub supplied: Option<ResourceSupply>,
     #[serde(rename = "type")]
     pub r#type: FinancialAccountType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub universal_fingerprint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification: Option<FinancialAccountVerification>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3809,10 +3803,6 @@ pub struct PaymentAttempt {
 pub struct PaymentMethod {
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub app_customer_local_fingerprint: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub app_local_fingerprint: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<PaymentMethodBankAccount>,
@@ -3833,8 +3823,6 @@ pub struct PaymentMethod {
     pub r#type: PaymentMethodType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub supplied: Option<PaymentMethodSupplied>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub universal_fingerprint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification: Option<PaymentMethodVerification>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
