@@ -2,9 +2,11 @@
 
 mod generated;
 mod resources;
+mod semantic_collections;
 
 pub use generated::*;
 pub use resources::*;
+pub use semantic_collections::*;
 
 use bytes::Bytes;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE, HeaderMap, USER_AGENT};
@@ -58,7 +60,7 @@ pub struct CreateFileRequest {
     pub bytes: Bytes,
     pub purpose: String,
     pub title: Option<String>,
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
 }
 
 #[derive(Debug, Clone)]

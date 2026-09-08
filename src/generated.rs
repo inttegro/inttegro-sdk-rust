@@ -1,6 +1,11 @@
 //! Generated, typed Inttegro domain and request values.
 // This file is generated from the canonical SDK contract. Do not edit manually.
 
+use crate::{
+    CustomData, CustomDataInput, CustomDataPatch, CustomerBalance, DoshAccount, FileMetadata,
+    FinancialAccountVerification, JsonData, MessageHeaders, OrderPayoutSettings,
+    PayoutDestinations, ProductDimensionDetails, Shipping, VariantValues,
+};
 use serde::{Deserialize, Serialize};
 
 /// A typed `AppCredentialOwner` value used by the Inttegro API.
@@ -784,7 +789,7 @@ pub type MessageTemplateAttachmentIDs = Vec<String>;
 
 pub type MessageTemplateAttachmentIDsInput = Vec<String>;
 
-pub type MessageTemplateVariablesInput = std::collections::HashMap<String, serde_json::Value>;
+pub type MessageTemplateVariablesInput = JsonData;
 
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -1224,7 +1229,7 @@ pub struct CatalogProductWithPriceReferenceInput {
 pub struct Chime {
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1303,7 +1308,7 @@ pub struct ChimeEmailMessage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<ChimeEmailMailbox>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<std::collections::HashMap<String, String>>,
+    pub headers: Option<MessageHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub safety: Option<ChimeEmailSafetyResult>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1318,7 +1323,7 @@ pub struct ChimeEmailMessageInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<std::collections::HashMap<String, String>>,
+    pub headers: Option<MessageHeaders>,
     pub subject: String,
     pub text: String,
     #[serde(rename = "from")]
@@ -1367,7 +1372,7 @@ pub struct ChimeEmailSchemaMarkup {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<ChimeEmailSchemaKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub json_ld: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub json_ld: Option<JsonData>,
 }
 
 /// Typed Inttegro request parameters.
@@ -1574,7 +1579,7 @@ pub struct CreateCustomerRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub billing_address: Option<CustomerAddressInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_address: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1615,7 +1620,7 @@ pub struct CreateFileLinkRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_by: Option<FileActorInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     pub file_id: String,
@@ -1647,7 +1652,7 @@ pub struct CreateOrderExistingCustomerInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payout_settings: Option<OrderPayoutSettingsRequest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1696,7 +1701,7 @@ pub struct CreateOrderNewCustomerInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payout_settings: Option<OrderPayoutSettingsRequest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1749,7 +1754,7 @@ pub struct CreateProductRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub publish: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(rename = "type")]
     pub r#type: ProductType,
     pub name: String,
@@ -1835,7 +1840,7 @@ pub struct CreateRefundLineItemInput {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CreateRefundRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason_details: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1880,7 +1885,7 @@ pub struct CreateUploadRequestRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attempts: Option<UploadRequestAttemptsRequest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     pub purpose: String,
@@ -1911,12 +1916,12 @@ pub struct CurrencyBalanceSnapshotReserved {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Customer {
-    pub balance: std::collections::HashMap<String, CustomerBalanceValue>,
+    pub balance: CustomerBalance,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub billing_address: Option<CustomerAddress>,
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_address: Option<String>,
     pub guest: bool,
@@ -1989,7 +1994,7 @@ pub struct CustomerDataInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     pub name: String,
     pub email_address: String,
     pub phone_number: String,
@@ -2058,7 +2063,7 @@ pub struct FeeDetailsInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     pub amount: AmountParams,
 }
 
@@ -2094,9 +2099,9 @@ pub struct File {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latest_error: Option<FileLatestError>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<std::collections::HashMap<String, String>>,
+    pub metadata: Option<FileMetadata>,
     pub created_at: String,
     pub updated_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2181,9 +2186,9 @@ pub struct FileLink {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revoked_by: Option<FileLinkActor>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<std::collections::HashMap<String, String>>,
+    pub metadata: Option<FileMetadata>,
     pub created_at: String,
     pub updated_at: String,
     pub expires_at: String,
@@ -2430,7 +2435,7 @@ pub struct FinancialAccount {
     pub created_at: String,
     pub currency: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     pub id: String,
@@ -2451,13 +2456,13 @@ pub struct FinancialAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub universal_fingerprint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub verification: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub verification: Option<FinancialAccountVerification>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<FinancialAccountBank>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disconnected_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub dosh_account: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub dosh_account: Option<DoshAccount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<FinancialAccountOwner>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2494,7 +2499,7 @@ pub struct FinancialAccountBank {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountBankRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2561,7 +2566,7 @@ pub struct FinancialAccountDisableRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountDoshRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2574,7 +2579,7 @@ pub struct FinancialAccountDoshRequest {
     pub reference: String,
     #[serde(rename = "type")]
     pub r#type: FinancialAccountType,
-    pub dosh_account: std::collections::HashMap<String, serde_json::Value>,
+    pub dosh_account: DoshAccount,
 }
 
 /// Typed Inttegro request parameters.
@@ -2713,7 +2718,7 @@ pub struct FinancialAccountPushConfiguration {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountUpdateRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataPatch>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2746,7 +2751,7 @@ pub struct FinancialAccountWalletMobileMoney {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountWalletRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2901,7 +2906,7 @@ pub struct InlineProductDetailsInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub about: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2923,7 +2928,7 @@ pub struct InvoiceSettings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
 }
 
 /// Typed Inttegro request parameters.
@@ -2936,7 +2941,7 @@ pub struct InvoiceSettingsInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
 }
 
 /// Typed Inttegro request parameters.
@@ -3092,7 +3097,7 @@ pub struct MessageTemplateEmailContent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<MessageTemplateMailbox>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<std::collections::HashMap<String, String>>,
+    pub headers: Option<MessageHeaders>,
 }
 
 /// Typed Inttegro request parameters.
@@ -3104,7 +3109,7 @@ pub struct MessageTemplateEmailContentInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<MessageTemplateMailboxInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<std::collections::HashMap<String, String>>,
+    pub headers: Option<MessageHeaders>,
     pub subject: String,
     pub html: String,
 }
@@ -3142,7 +3147,7 @@ pub struct MessageTemplatePreview {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MessageTemplateReferenceInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variables: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub variables: Option<JsonData>,
     pub template_id: String,
 }
 
@@ -3319,7 +3324,7 @@ pub struct Order {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_from: Option<OrderCreatedFrom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     pub customer: OrderCustomer,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
@@ -3347,11 +3352,11 @@ pub struct Order {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payment_due_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub payout_settings: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub payout_settings: Option<OrderPayoutSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub shipping: Option<Shipping>,
 }
 
 /// Typed Inttegro domain value.
@@ -3560,7 +3565,7 @@ pub struct OrderProductLineItemProduct {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub about: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     pub name: String,
@@ -3813,7 +3818,7 @@ pub struct PaymentMethod {
     pub bank_account: Option<PaymentMethodBankAccount>,
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     pub customer_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<bool>,
@@ -3984,7 +3989,7 @@ pub struct PaymentMethodSnapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<PaymentMethodSnapshotBankAccount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub card: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub card: Option<JsonData>,
     pub created_at: String,
     pub customer_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4089,7 +4094,7 @@ pub struct PaymentMethodVerificationSession {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delivery: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub delivery: Option<JsonData>,
 }
 
 /// Typed Inttegro domain value.
@@ -4100,7 +4105,7 @@ pub struct PaymentNextAction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub confirm_payment: Option<PaymentNextActionConfirmPayment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub execute: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub execute: Option<JsonData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<PaymentNextActionRedirect>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4215,7 +4220,7 @@ pub struct Payout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     pub destination_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<PayoutError>,
@@ -4270,7 +4275,7 @@ pub struct PayoutPage {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PayoutSettingsLookup {
-    pub destinations: std::collections::HashMap<String, String>,
+    pub destinations: PayoutDestinations,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fx_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4301,7 +4306,7 @@ pub struct PayoutSettingsLookupScheduleAgingSpec {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PayoutSettingsMutation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub destinations: Option<std::collections::HashMap<String, String>>,
+    pub destinations: Option<PayoutDestinations>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4358,20 +4363,20 @@ pub struct PriceEmbeddedProduct {
     pub category: Option<String>,
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub dimensions: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub dimensions: Option<ProductDimensions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub media: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub media: Option<ProductMedia>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub published_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub shipment: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub shipment: Option<ProductShipment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     #[serde(rename = "type")]
@@ -4467,7 +4472,7 @@ pub struct Product {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dimensions: Option<ProductDimensions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     pub active: bool,
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4519,7 +4524,7 @@ pub struct ProductDimensionsCustom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub details: Option<std::collections::HashMap<String, String>>,
+    pub details: Option<ProductDimensionDetails>,
 }
 
 /// Typed Inttegro domain value.
@@ -4552,7 +4557,7 @@ pub struct ProductDimensionsInputCustom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub details: Option<std::collections::HashMap<String, String>>,
+    pub details: Option<ProductDimensionDetails>,
 }
 
 /// Typed Inttegro request parameters.
@@ -4689,15 +4694,15 @@ pub struct ProductShipment {
     #[serde(rename = "type")]
     pub r#type: ProductShipmentType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delivery: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub delivery: Option<JsonData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub download: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub download: Option<JsonData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub render: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub render: Option<JsonData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub service: Option<JsonData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stream: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub stream: Option<JsonData>,
 }
 
 /// Typed Inttegro request parameters.
@@ -4808,20 +4813,20 @@ pub struct PurchaseIntentProduct {
     pub category: Option<String>,
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub dimensions: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub dimensions: Option<ProductDimensions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub media: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub media: Option<ProductMedia>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub published_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub shipment: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub shipment: Option<ProductShipment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     #[serde(rename = "type")]
@@ -4880,7 +4885,7 @@ pub struct PurchaseIntentVariant {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product: Option<PurchaseIntentProduct>,
     pub product_id: String,
-    pub variant_values: std::collections::HashMap<String, String>,
+    pub variant_values: VariantValues,
 }
 
 /// Typed Inttegro domain value.
@@ -4914,7 +4919,7 @@ pub struct Refund {
     pub canceled_at: Option<String>,
     pub created_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failed_at: Option<String>,
     pub id: String,
@@ -4980,7 +4985,7 @@ pub struct RenderedEmailMessageTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<MessageTemplateMailbox>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<std::collections::HashMap<String, String>>,
+    pub headers: Option<MessageHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub safety: Option<MessageTemplateSafetyResult>,
 }
@@ -5264,7 +5269,7 @@ pub struct SendChimeRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request_meta: Option<SendChimeRequestRequestMeta>,
     pub recipient: SendChimeRequestRecipient,
@@ -5280,7 +5285,7 @@ pub struct SendChimeRequestRequestMeta {
 /// Typed Inttegro request parameters.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SetPayoutDestinationsRequest {
-    pub destinations: std::collections::HashMap<String, String>,
+    pub destinations: PayoutDestinations,
 }
 
 /// Typed Inttegro request parameters.
@@ -5291,7 +5296,7 @@ pub struct ShippingDetailsInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataInput>,
     pub fee: AmountParams,
 }
 
@@ -5313,7 +5318,7 @@ pub struct ShippingLineItemInput {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TokenizeMobileMoneyPaymentMethodRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     pub customer_id: String,
     #[serde(rename = "type")]
     pub r#type: PaymentMethodType,
@@ -5353,7 +5358,7 @@ pub struct UpdateCustomerRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub billing_address: Option<CustomerAddressInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub custom_data: Option<CustomDataPatch>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_address: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5401,7 +5406,7 @@ pub struct UpdateOrderRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clear_payment_method: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<InvoiceSettingsInput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5443,7 +5448,7 @@ pub struct UpdateOrderRequestPaymentMethodDataMobileMoney {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UpdatePaymentMethodRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, Option<String>>>,
+    pub custom_data: Option<CustomDataPatch>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5522,7 +5527,7 @@ pub struct UpdateProductRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<ProductAttributeInput>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     pub product_id: String,
 }
 
@@ -5574,7 +5579,7 @@ pub struct UpdatedProduct {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub category: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dimensions: Option<ProductDimensions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5616,9 +5621,9 @@ pub struct UploadRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canceled_by: Option<UploadRequestActor>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub custom_data: Option<std::collections::HashMap<String, String>>,
+    pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<std::collections::HashMap<String, String>>,
+    pub metadata: Option<FileMetadata>,
     pub created_at: String,
     pub updated_at: String,
     pub expires_at: String,

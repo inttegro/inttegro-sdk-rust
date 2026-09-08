@@ -1,4 +1,4 @@
-use inttegro::{Client, CreateOrderRequest, Order, RequestOptions};
+use inttegro::{Client, CreateOrderRequest, CustomData, CustomDataPatch, Order, RequestOptions};
 use std::io::{Read, Write};
 use std::net::TcpListener;
 
@@ -10,6 +10,25 @@ fn public_types_are_concurrency_safe() {
     assert_send_sync::<Order>();
     assert_send_sync::<CreateOrderRequest>();
     let _ = RequestOptions::default();
+}
+
+#[test]
+fn semantic_collections_control_custom_data_mutation() {
+    let mut data = CustomData::new();
+    data.insert("order", "first").unwrap();
+    assert_eq!(data.get("order"), Some("first"));
+
+    let oversized_key = "x".repeat(257);
+    assert!(data.insert(oversized_key, "invalid").is_err());
+    assert_eq!(data.len(), 1, "failed mutations must be rolled back");
+
+    let mut patch = CustomDataPatch::new();
+    patch.set("campaign", "winter").unwrap();
+    patch.unset("legacy").unwrap();
+    assert_eq!(
+        serde_json::to_value(patch).unwrap(),
+        serde_json::json!({"campaign": "winter", "legacy": null})
+    );
 }
 
 #[tokio::test]
