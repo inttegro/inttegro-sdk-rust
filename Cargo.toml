@@ -2,7 +2,7 @@
 name = "inttegro"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.88"
 description = "Official server-side Rust SDK for Inttegro"
 license = "MIT"
 repository = "https://github.com/zebodotdev/inttegro-sdk-rust"
@@ -17,7 +17,7 @@ reqwest = { version = "0.13", default-features = false, features = ["json", "mul
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
-time = { version = ">=0.3.36,<0.3.45", features = ["formatting"] }
+time = { version = "0.3.55", features = ["formatting"] }
 url = "2"
 uuid = { version = "1", features = ["v7"] }
 
