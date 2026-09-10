@@ -1,4 +1,7 @@
-use inttegro::{Client, CreateOrderRequest, CustomData, CustomDataPatch, Order, RequestOptions};
+use inttegro::{
+    BalanceSnapshot, Client, CreateOrderRequest, CustomData, CustomDataPatch, Order,
+    PurchaseIntent, RequestOptions,
+};
 use std::io::{Read, Write};
 use std::net::TcpListener;
 
@@ -29,6 +32,96 @@ fn semantic_collections_control_custom_data_mutation() {
         serde_json::to_value(patch).unwrap(),
         serde_json::json!({"campaign": "winter", "legacy": null})
     );
+}
+
+#[test]
+fn balance_snapshot_exposes_ghs_statically() {
+    let balance: BalanceSnapshot = serde_json::from_value(serde_json::json!({
+        "ghs": {
+            "available": {"amount": 1000},
+            "includes_transactions_before": "2026-09-09T12:00:00Z",
+            "pending": {"amount": 200},
+            "refund": {"amount": 50},
+            "reserved": {"amount": 100}
+        }
+    }))
+    .unwrap();
+
+    assert_eq!(balance.ghs.available.amount, 1_000);
+    assert_eq!(
+        balance.ghs.includes_transactions_before.to_string(),
+        "2026-09-09T12:00:00Z"
+    );
+    assert!(
+        serde_json::from_value::<BalanceSnapshot>(serde_json::json!({
+            "ghs": {
+                "available": {"amount": 1000},
+                "includes_transactions_before": "2026-09-09T12:00:00",
+                "pending": {"amount": 200},
+                "refund": {"amount": 50},
+                "reserved": {"amount": 100}
+            }
+        }))
+        .is_err()
+    );
+}
+
+#[test]
+fn purchase_intent_exposes_nested_response_types() {
+    let intent: PurchaseIntent = serde_json::from_value(serde_json::json!({
+        "activity": {"recent": [{
+            "created_at": "2026-09-09T12:01:00Z",
+            "id": "saleevt_123",
+            "purchase_intent_id": "sale_123",
+            "type": "viewed",
+            "visitor": {"ip_address": "203.0.113.7"}
+        }]},
+        "allow_variants": false,
+        "created_at": "2026-09-09T12:00:00Z",
+        "id": "sale_123",
+        "merchant": {"organization_name": "Tea House Ltd"},
+        "product": {
+            "active": true,
+            "created_at": "2026-09-09T11:00:00Z",
+            "dimensions": {"digital": {"bytes": 1024}},
+            "id": "prod_123",
+            "name": "Tea guide",
+            "type": "digital"
+        },
+        "quantity": {"min": 1},
+        "status": "active",
+        "usage": {
+            "order": {"created_at": "2026-09-09T12:02:00Z", "id": "or_123"},
+            "single_use": true
+        }
+    }))
+    .unwrap();
+
+    assert_eq!(
+        intent.activity.unwrap().recent.unwrap()[0]
+            .visitor
+            .as_ref()
+            .unwrap()
+            .ip_address
+            .as_deref(),
+        Some("203.0.113.7")
+    );
+    assert_eq!(
+        intent.merchant.unwrap().organization_name.as_deref(),
+        Some("Tea House Ltd")
+    );
+    assert_eq!(
+        intent
+            .product
+            .unwrap()
+            .dimensions
+            .unwrap()
+            .digital
+            .unwrap()
+            .bytes,
+        Some(1_024.0)
+    );
+    assert_eq!(intent.usage.order.unwrap().id, "or_123");
 }
 
 #[tokio::test]

@@ -3,8 +3,8 @@
 
 use crate::{
     CustomData, CustomDataInput, CustomDataPatch, CustomerBalance, DoshAccount, FileMetadata,
-    FinancialAccountVerification, JsonData, MessageHeaders, OrderPayoutSettings,
-    PayoutDestinations, ProductDimensionDetails, Shipping, VariantValues,
+    FinancialAccountVerification, JsonData, MessageHeaders, PayoutDestinations,
+    ProductDimensionDetails, VariantValues,
 };
 use serde::{Deserialize, Serialize};
 
@@ -491,10 +491,10 @@ pub enum PaymentNextActionType {
     Execute,
     #[serde(rename = "redirect")]
     Redirect,
-    #[serde(rename = "authorize")]
-    Authorize,
-    #[serde(rename = "none")]
-    None,
+    #[serde(rename = "authorize_payment")]
+    AuthorizePayment,
+    #[serde(rename = "request_confirmation")]
+    RequestConfirmation,
 }
 
 /// A typed `PaymentResultStatus` value used by the Inttegro API.
@@ -798,6 +798,7 @@ pub enum OrderLineItem {
     OrderProductLineItem(OrderProductLineItem),
     OrderFeeLineItem(OrderFeeLineItem),
     OrderShippingLineItem(OrderShippingLineItem),
+    OrderDiscountLineItem(OrderDiscountLineItem),
 }
 
 #[allow(clippy::large_enum_variant)]
@@ -905,11 +906,11 @@ pub struct Application {
     pub alias: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret_key: Option<ApplicationSecretKey>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -931,7 +932,7 @@ pub struct ApplicationRelationship {
     pub child_standing: String,
     pub relationship_policy: ApplicationRelationshipPolicy,
     pub retained_creator_authority_exists: bool,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
 }
 
 /// Typed Inttegro domain value.
@@ -950,7 +951,7 @@ pub struct ApplicationSecretKey {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub issued_at: Option<String>,
+    pub issued_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
 }
@@ -966,18 +967,20 @@ pub struct ArchivePaymentMethodRequest {
 pub struct BalanceTransaction {
     pub amount: BalanceTransactionAmount,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub available_at: Option<String>,
+    pub available_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claimed_at: Option<String>,
-    pub created_at: String,
+    pub claimed_at: Option<crate::Timestamp>,
+    pub created_at: crate::Timestamp,
     pub id: String,
     pub order_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub paid_at: Option<String>,
+    pub paid_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payment_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payout_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payout_configuration: Option<PayoutConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub refund_id: Option<String>,
     #[serde(rename = "type")]
@@ -1022,7 +1025,7 @@ pub struct BroadcastCancelDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chime_ids: Option<Vec<String>>,
     pub content: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1030,24 +1033,24 @@ pub struct BroadcastCancelDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<BroadcastError>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idempotency_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     pub recipients: Vec<String>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
     pub sender_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
+    pub canceled_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct BroadcastCreationDetail {
     pub content: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1058,7 +1061,7 @@ pub struct BroadcastCreationDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     pub recipients: Vec<String>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
     pub sender_id: String,
 }
 
@@ -1068,7 +1071,7 @@ pub struct BroadcastDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chime_ids: Option<Vec<String>>,
     pub content: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1076,14 +1079,14 @@ pub struct BroadcastDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<BroadcastError>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idempotency_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     pub recipients: Vec<String>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
     pub sender_id: String,
 }
 
@@ -1189,11 +1192,11 @@ pub struct CatalogPrice {
     pub product_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product: Option<PriceEmbeddedProduct>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro request parameters.
@@ -1227,7 +1230,7 @@ pub struct CatalogProductWithPriceReferenceInput {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Chime {
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1256,7 +1259,7 @@ pub struct ChimeEmailEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub complaint_sub_type: Option<String>,
     pub id: String,
-    pub occurred_at: String,
+    pub occurred_at: crate::Timestamp,
     pub provider: String,
     pub provider_message_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1451,9 +1454,9 @@ pub struct ChimeSavedCustomerRecipientInput {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ChimeTransmission {
     pub address: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delivered_at: Option<String>,
+    pub delivered_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_events: Option<Vec<ChimeEmailEvent>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1465,22 +1468,22 @@ pub struct ChimeTransmission {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failed_at: Option<String>,
+    pub failed_at: Option<crate::Timestamp>,
     pub gateway: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway_message_id: Option<String>,
     pub id: String,
-    pub initialized_at: String,
+    pub initialized_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_email_event_at: Option<String>,
+    pub last_email_event_at: Option<crate::Timestamp>,
     pub mechanism: ChimeTransport,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sent_at: Option<String>,
+    pub sent_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sent_via: Option<ChimeTransport>,
     pub status: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub suppressed_at: Option<String>,
+    pub suppressed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suppression_reason: Option<String>,
 }
@@ -1622,7 +1625,7 @@ pub struct CreateFileLinkRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     pub file_id: String,
 }
 
@@ -1658,7 +1661,7 @@ pub struct CreateOrderExistingCustomerInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingInput>,
     pub customer_id: String,
-    pub line_items: Vec<serde_json::Value>,
+    pub line_items: Vec<LineItemInput>,
 }
 
 /// Typed Inttegro request parameters.
@@ -1709,7 +1712,7 @@ pub struct CreateOrderNewCustomerInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payment_method_data: Option<PaymentMethodDataInput>,
     pub customer_data: CustomerDataInput,
-    pub line_items: Vec<serde_json::Value>,
+    pub line_items: Vec<LineItemInput>,
 }
 
 /// Typed Inttegro request parameters.
@@ -1774,7 +1777,7 @@ pub struct CreatePurchaseIntentRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage: Option<CreatePurchaseIntentRequestUsage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     pub quantity: CreatePurchaseIntentRequestQuantity,
 }
 
@@ -1887,7 +1890,7 @@ pub struct CreateUploadRequestRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     pub purpose: String,
 }
 
@@ -1895,7 +1898,7 @@ pub struct CreateUploadRequestRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CurrencyBalanceSnapshot {
     pub available: BalanceValue,
-    pub includes_transactions_before: String,
+    pub includes_transactions_before: crate::Timestamp,
     pub pending: BalanceValue,
     pub refund: CurrencyBalanceSnapshotRefund,
     pub reserved: CurrencyBalanceSnapshotReserved,
@@ -1919,7 +1922,7 @@ pub struct Customer {
     pub balance: CustomerBalance,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub billing_address: Option<CustomerAddress>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1938,7 +1941,7 @@ pub struct Customer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -1984,7 +1987,7 @@ pub struct CustomerAddressInput {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CustomerBalanceValue {
-    pub as_of: String,
+    pub as_of: crate::Timestamp,
     pub available: Amount,
 }
 
@@ -2102,12 +2105,12 @@ pub struct File {
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<FileMetadata>,
-    pub created_at: String,
-    pub updated_at: String,
+    pub created_at: crate::Timestamp,
+    pub updated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub available_at: Option<String>,
+    pub available_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -2168,7 +2171,7 @@ pub struct FileLatestError {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retryable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub at: Option<String>,
+    pub at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -2189,11 +2192,11 @@ pub struct FileLink {
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<FileMetadata>,
-    pub created_at: String,
-    pub updated_at: String,
-    pub expires_at: String,
+    pub created_at: crate::Timestamp,
+    pub updated_at: crate::Timestamp,
+    pub expires_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revoked_at: Option<String>,
+    pub revoked_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -2204,7 +2207,7 @@ pub struct FileLinkAccess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_accessed_at: Option<String>,
+    pub last_accessed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allow_download: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2407,7 +2410,7 @@ pub struct FileSource {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FileUploadReceipt {
     pub content_type: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filename: Option<String>,
     pub id: String,
@@ -2427,8 +2430,8 @@ pub struct FinalizeOrderRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
-    pub created_at: String,
+    pub archived_at: Option<crate::Timestamp>,
+    pub created_at: crate::Timestamp,
     pub currency: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
@@ -2454,7 +2457,7 @@ pub struct FinancialAccount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<FinancialAccountBank>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub disconnected_at: Option<String>,
+    pub disconnected_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dosh_account: Option<DoshAccount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2689,14 +2692,14 @@ pub struct FinancialAccountPageRequest {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountPullConfiguration {
-    pub enabled_at: String,
+    pub enabled_at: crate::Timestamp,
     pub mandate: FinancialAccountPullConfigurationMandate,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountPullConfigurationMandate {
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     pub id: String,
     pub ip_address: String,
     pub user_agent: String,
@@ -2705,7 +2708,7 @@ pub struct FinancialAccountPullConfigurationMandate {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FinancialAccountPushConfiguration {
-    pub enabled_at: String,
+    pub enabled_at: crate::Timestamp,
 }
 
 /// Typed Inttegro request parameters.
@@ -2845,7 +2848,7 @@ pub struct GeneratedSecretKey {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     pub token_type: SecretKeyTokenType,
-    pub issued_at: String,
+    pub issued_at: crate::Timestamp,
     pub token: String,
 }
 
@@ -3072,12 +3075,12 @@ pub struct MessageTemplate {
     pub email: Option<MessageTemplateEmailContent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<String>>,
-    pub created_at: String,
-    pub updated_at: String,
+    pub created_at: crate::Timestamp,
+    pub updated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub published_at: Option<String>,
+    pub published_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -3258,11 +3261,11 @@ pub struct OTPTransaction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel_reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
-    pub expires_at: String,
+    pub canceled_at: Option<crate::Timestamp>,
+    pub expires_at: crate::Timestamp,
     pub full_message: String,
     pub id: String,
-    pub initiated_at: String,
+    pub initiated_at: crate::Timestamp,
     pub status: OTPStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub transmission: Option<OTPTransmission>,
@@ -3274,7 +3277,7 @@ pub struct OTPTransmission {
     pub recipient: String,
     pub sender_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sent_at: Option<String>,
+    pub sent_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sent_via: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3291,7 +3294,7 @@ pub struct OTPVerification {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct OTPVerificationAttempt {
-    pub attempted_at: String,
+    pub attempted_at: crate::Timestamp,
     pub id: String,
     pub presented_token: String,
     pub recipient: String,
@@ -3310,20 +3313,20 @@ pub struct OTPVerificationAttemptResult {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Order {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
+    pub canceled_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checkout_settings: Option<OrderCheckoutSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub completed_at: Option<String>,
+    pub completed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub created_from: Option<OrderCreatedFrom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     pub customer: OrderCustomer,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     pub id: String,
-    pub initiated_at: String,
+    pub initiated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub invoice: Option<OrderInvoice>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3336,21 +3339,17 @@ pub struct Order {
     pub invoice_settings: Option<InvoiceSettings>,
     pub status: OrderStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sealed_at: Option<String>,
+    pub sealed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub line_item_group: Option<OrderLineItemGroup>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payment: Option<Payment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub paid_at: Option<String>,
+    pub paid_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub payment_due_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub payout_settings: Option<OrderPayoutSettings>,
+    pub payment_due_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Shipping>,
 }
 
 /// Typed Inttegro domain value.
@@ -3492,8 +3491,7 @@ pub struct OrderFeeLineItemFee {
 pub struct OrderInvoice {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<OrderInvoiceFormat>,
+    pub format: OrderInvoiceFormat,
 }
 
 /// Typed Inttegro domain value.
@@ -3508,19 +3506,28 @@ pub struct OrderInvoiceFormat {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct OrderLineItemGroup {
-    pub line_items: Vec<serde_json::Value>,
+    pub line_items: Vec<OrderLineItem>,
     pub total: Amount,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct OrderDiscountLineItem {
+    #[serde(rename = "type")]
+    pub r#type: String,
+    pub discount: OrderDiscount,
+}
+
+/// Discount marker returned for a discount line item.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OrderDiscount {}
+
+/// Typed Inttegro domain value.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct OrderPage {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub number: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub orders: Option<Vec<Order>>,
+    pub number: i64,
+    pub size: i64,
+    pub orders: Vec<Order>,
 }
 
 /// Typed Inttegro request parameters.
@@ -3644,9 +3651,9 @@ pub struct PageFilesRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub page_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub created_after: Option<String>,
+    pub created_after: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub created_before: Option<String>,
+    pub created_before: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro request parameters.
@@ -3753,32 +3760,73 @@ pub struct Payment {
     pub statement_descriptor: String,
     pub amount: Amount,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<PaymentBillingDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub balance_transaction: Option<BalanceTransaction>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodSnapshot>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub customer: Option<PaymentCustomer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latest_attempt: Option<PaymentAttempt>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub next_action: Option<PaymentNextAction>,
-    pub initiated_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
+    pub latest_error: Option<PaymentError>,
+    pub initiated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub paid_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
+    pub paid_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub due_at: Option<String>,
+    pub canceled_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expired_at: Option<String>,
+    pub due_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failed_at: Option<String>,
+    pub expired_at: Option<crate::Timestamp>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub failed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paid_offline: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub payout_configuration: Option<PaymentPayoutConfiguration>,
+    pub payout_configuration: Option<PayoutConfiguration>,
+}
+
+/// Billing information captured for a payment.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PaymentBillingDetails {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub owner: Option<PaymentMethodSnapshotOwner>,
+}
+
+/// Customer projection returned with a payment.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PaymentCustomer {
+    pub id: String,
+    pub guest: bool,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub email_address: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub phone_number: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub billing_address: Option<OrderAddress>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<OrderAddress>,
+}
+
+/// Public payment error information.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PaymentError {
+    pub message: String,
+}
+
+/// Public error information for a payment attempt.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PaymentAttemptError {
+    pub message: String,
 }
 
 /// Typed Inttegro domain value.
@@ -3791,11 +3839,11 @@ pub struct PaymentAttempt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<PaymentAttemptStatus>,
+    pub error: Option<PaymentAttemptError>,
+    pub status: PaymentAttemptStatus,
+    pub initiated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub initiated_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub succeeded_at: Option<String>,
+    pub succeeded_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -3803,17 +3851,19 @@ pub struct PaymentAttempt {
 pub struct PaymentMethod {
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<PaymentMethodBankAccount>,
-    pub created_at: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub card: Option<PaymentMethodCard>,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     pub customer_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_on: Option<String>,
+    pub expires_on: Option<crate::Timestamp>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mobile_money: Option<PaymentMethodMobileMoney>,
@@ -3826,7 +3876,7 @@ pub struct PaymentMethod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verification: Option<PaymentMethodVerification>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub verified_at: Option<String>,
+    pub verified_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -3977,8 +4027,8 @@ pub struct PaymentMethodSnapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<PaymentMethodSnapshotBankAccount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub card: Option<JsonData>,
-    pub created_at: String,
+    pub card: Option<PaymentMethodCard>,
+    pub created_at: crate::Timestamp,
     pub customer_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mobile_money: Option<PaymentMethodSnapshotMobileMoney>,
@@ -3988,7 +4038,7 @@ pub struct PaymentMethodSnapshot {
     pub r#type: PaymentMethodType,
     pub verified: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub verified_at: Option<String>,
+    pub verified_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -4042,7 +4092,7 @@ pub struct PaymentMethodSupplied {
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource_type: Option<String>,
-    pub supplied_at: String,
+    pub supplied_at: crate::Timestamp,
 }
 
 /// Typed Inttegro domain value.
@@ -4063,8 +4113,8 @@ pub struct PaymentMethodTypeSetting {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentMethodVerification {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub completed_at: Option<String>,
-    pub initiated_at: String,
+    pub completed_at: Option<crate::Timestamp>,
+    pub initiated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mechanism: Option<String>,
     pub request_id: String,
@@ -4078,11 +4128,26 @@ pub struct PaymentMethodVerificationSession {
     pub payment_method_id: String,
     pub status: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub token_sent_at: Option<String>,
+    pub token_sent_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delivery: Option<JsonData>,
+    pub delivery: Option<PaymentMethodVerificationDelivery>,
+}
+
+/// Card marker. Card credentials are never returned by the API.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PaymentMethodCard {}
+
+/// Describes delivery of a payment-method verification token.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PaymentMethodVerificationDelivery {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recipient: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub channel: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sender_id: Option<String>,
 }
 
 /// Typed Inttegro domain value.
@@ -4093,80 +4158,62 @@ pub struct PaymentNextAction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub confirm_payment: Option<PaymentNextActionConfirmPayment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub execute: Option<JsonData>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<PaymentNextActionRedirect>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorize: Option<PaymentNextActionAuthorize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request_confirmation: Option<PaymentNextActionRequestConfirmation>,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentNextActionAuthorize {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub beneficiary: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub beneficiary: String,
+    pub scheme: String,
+    pub expires_at: crate::Timestamp,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentNextActionConfirmPayment {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
+    pub expires_at: crate::Timestamp,
+    pub scheme: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<PaymentNextActionConfirmPaymentRequest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attempt: Option<PaymentNextActionConfirmPaymentAttempt>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub confirmed: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub confirmed: bool,
+    pub status: String,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentNextActionConfirmPaymentAttempt {
+    pub status: String,
+    pub confirmed: bool,
+    pub reason: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub confirmed: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub reason: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub token: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub created_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
+    pub created_at: crate::Timestamp,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentNextActionConfirmPaymentRequest {
+    pub id: String,
+    pub recipient: String,
+    pub sent_via: PaymentConfirmationChannel,
+    pub token_size: i64,
+    pub sender_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub recipient: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sent_via: Option<PaymentConfirmationChannel>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub token_size: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sender_id: Option<String>,
+    pub status: Option<String>,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentNextActionRedirect {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub redirect_url: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub valid_until: Option<String>,
+    pub redirect_url: String,
+    pub valid_until: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latest_visit: Option<PaymentNextActionRedirectLatestVisit>,
 }
@@ -4174,28 +4221,31 @@ pub struct PaymentNextActionRedirect {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PaymentNextActionRedirectLatestVisit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub at: Option<String>,
+    pub user_agent: String,
+    pub ip_address: String,
+    pub at: crate::Timestamp,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PaymentPayoutConfiguration {
+pub struct PaymentNextActionRequestConfirmation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enable_fx: Option<bool>,
+    pub last_request: Option<PaymentNextActionConfirmPaymentRequest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub destination: Option<PaymentPayoutConfigurationDestination>,
+    pub after: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PaymentPayoutConfigurationDestination {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub financial_account_id: Option<String>,
+pub struct PayoutConfiguration {
+    pub enable_fx: bool,
+    pub destination: PayoutConfigurationDestination,
+}
+
+/// Typed Inttegro domain value.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PayoutConfigurationDestination {
+    pub financial_account_id: String,
 }
 
 /// Typed Inttegro domain value.
@@ -4206,21 +4256,21 @@ pub struct Payout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub balance_transactions: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
+    pub canceled_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     pub destination_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<PayoutError>,
-    pub execute_after: String,
+    pub execute_after: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub executed_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expected_at: Option<String>,
+    pub expected_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failed_at: Option<String>,
+    pub failed_at: Option<crate::Timestamp>,
     pub id: String,
-    pub initiated_at: String,
+    pub initiated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub initiated_by: Option<String>,
     pub max_amount: Amount,
@@ -4229,16 +4279,16 @@ pub struct Payout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheduled_at: Option<String>,
+    pub scheduled_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduled_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sent_at: Option<String>,
+    pub sent_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_id: Option<String>,
     pub status: PayoutStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub succeeded_at: Option<String>,
+    pub succeeded_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -4246,7 +4296,7 @@ pub struct Payout {
 pub struct PayoutError {
     pub cause: String,
     pub message: String,
-    pub occurred_at: String,
+    pub occurred_at: crate::Timestamp,
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -4344,12 +4394,12 @@ pub struct PriceEmbeddedProduct {
     pub about: Option<String>,
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<PriceEmbeddedProductAttributesItem>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub category: Option<String>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4360,7 +4410,7 @@ pub struct PriceEmbeddedProduct {
     pub media: Option<ProductMedia>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub published_at: Option<String>,
+    pub published_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4372,7 +4422,7 @@ pub struct PriceEmbeddedProduct {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit_dim: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -4407,11 +4457,11 @@ pub struct PricePageItem {
     pub product_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product: Option<PriceEmbeddedProduct>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro request parameters.
@@ -4462,13 +4512,13 @@ pub struct Product {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     pub active: bool,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub published_at: Option<String>,
+    pub published_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit_dim: Option<String>,
 }
@@ -4658,12 +4708,9 @@ pub struct ProductMediaInput {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ProductPage {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub number: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub products: Option<Vec<Product>>,
+    pub number: i64,
+    pub size: i64,
+    pub products: Vec<Product>,
 }
 
 /// Typed Inttegro domain value.
@@ -4682,16 +4729,36 @@ pub struct ProductShipment {
     #[serde(rename = "type")]
     pub r#type: ProductShipmentType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delivery: Option<JsonData>,
+    pub delivery: Option<ProductDelivery>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub download: Option<JsonData>,
+    pub download: Option<ProductDownload>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub render: Option<JsonData>,
+    pub render: Option<ProductRender>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<JsonData>,
+    pub service: Option<ProductService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stream: Option<JsonData>,
+    pub stream: Option<ProductStream>,
 }
+
+/// Delivery fulfillment marker.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProductDelivery {}
+
+/// Download fulfillment marker.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProductDownload {}
+
+/// Rendered fulfillment marker.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProductRender {}
+
+/// Service fulfillment marker.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProductService {}
+
+/// Streaming fulfillment marker.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProductStream {}
 
 /// Typed Inttegro request parameters.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -4711,14 +4778,14 @@ pub struct PublicFileStorage {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PurchaseIntent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub activity: Option<PurchaseIntentActivity>,
+    pub activity: Option<PurchaseIntentActivityLog>,
     pub allow_variants: bool,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub inactive_at: Option<String>,
+    pub inactive_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub merchant: Option<PurchaseIntentMerchant>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4728,7 +4795,7 @@ pub struct PurchaseIntent {
     pub quantity: PurchaseIntentQuantity,
     pub status: PurchaseIntentStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     pub usage: PurchaseIntentUsage,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variant_set: Option<PurchaseIntentVariantSet>,
@@ -4736,16 +4803,94 @@ pub struct PurchaseIntent {
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PurchaseIntentActivity {
+pub struct PurchaseIntentActivityLog {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recent: Option<Vec<PurchaseIntentActivity>>,
 }
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PurchaseIntentMerchant {
+pub struct PurchaseIntentActivity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub app_id: Option<String>,
+    pub amount: Option<Amount>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attribution: Option<PurchaseIntentActivityAttribution>,
+    pub created_at: crate::Timestamp,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error_code: Option<String>,
+    pub id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub order_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payment_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub product_id: Option<String>,
+    pub purchase_intent_id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: PurchaseIntentActivityType,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variant_product_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub visitor: Option<PurchaseIntentActivityVisitor>,
+}
+
+/// Typed Inttegro domain value.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PurchaseIntentActivityAttribution {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub campaign: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub channel: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub landing_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub referrer: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub referrer_host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub term: Option<String>,
+}
+
+/// Typed Inttegro domain value.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PurchaseIntentActivityVisitor {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub browser: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub device: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub os: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub session_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub visitor_id: Option<String>,
+}
+
+/// Typed Inttegro domain value.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PurchaseIntentMerchant {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub app_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4794,12 +4939,12 @@ pub struct PurchaseIntentProduct {
     pub about: Option<String>,
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub archived_at: Option<String>,
+    pub archived_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<PurchaseIntentProductAttributesItem>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub category: Option<String>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4810,7 +4955,7 @@ pub struct PurchaseIntentProduct {
     pub media: Option<ProductMedia>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub published_at: Option<String>,
+    pub published_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4822,7 +4967,7 @@ pub struct PurchaseIntentProduct {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit_dim: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prices: Option<Vec<ProductPriceSummary>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4858,7 +5003,7 @@ pub struct PurchaseIntentUsage {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PurchaseIntentUsageOrder {
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     pub id: String,
 }
 
@@ -4904,17 +5049,17 @@ pub struct PurchaseIntentVariantSet {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Refund {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
-    pub created_at: String,
+    pub canceled_at: Option<crate::Timestamp>,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failed_at: Option<String>,
+    pub failed_at: Option<crate::Timestamp>,
     pub id: String,
     pub line_items: Vec<RefundLineItem>,
     pub order_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub processing_at: Option<String>,
+    pub processing_at: Option<crate::Timestamp>,
     pub reason: RefundReason,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason_details: Option<String>,
@@ -4922,7 +5067,7 @@ pub struct Refund {
     pub reference: Option<String>,
     pub status: RefundStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub succeeded_at: Option<String>,
+    pub succeeded_at: Option<crate::Timestamp>,
     pub total: Amount,
 }
 
@@ -5014,7 +5159,7 @@ pub struct ResourceSupply {
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource_type: Option<String>,
-    pub supplied_at: String,
+    pub supplied_at: crate::Timestamp,
 }
 
 /// Typed Inttegro request parameters.
@@ -5055,7 +5200,7 @@ pub struct ScheduleCancelDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chime_ids: Option<Vec<String>>,
     pub content: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5063,17 +5208,17 @@ pub struct ScheduleCancelDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<ScheduleError>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idempotency_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     pub recipients: Vec<String>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
     pub sender_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
+    pub canceled_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro request parameters.
@@ -5092,7 +5237,7 @@ pub struct ScheduleChimeRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     pub recipients: Vec<serde_json::Value>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
 }
 
 /// Typed Inttegro request parameters.
@@ -5105,13 +5250,13 @@ pub struct ScheduleChimeRequestRequestMeta {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ScheduleCreationDetail {
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<ChimeEmailMessage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
     pub full_message: String,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5120,7 +5265,7 @@ pub struct ScheduleCreationDetail {
     pub purpose: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recipients: Option<Vec<String>>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
     pub sender_id: String,
 }
 
@@ -5130,7 +5275,7 @@ pub struct ScheduleDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chime_ids: Option<Vec<String>>,
     pub content: String,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer_ids: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5138,14 +5283,14 @@ pub struct ScheduleDetail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<ScheduleError>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub executed_at: Option<String>,
+    pub executed_at: Option<crate::Timestamp>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idempotency_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     pub recipients: Vec<String>,
-    pub send_after: String,
+    pub send_after: crate::Timestamp,
     pub sender_id: String,
 }
 
@@ -5165,7 +5310,7 @@ pub struct ScheduleError {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SchedulePayoutRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub execute_after: Option<String>,
+    pub execute_after: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_amount: Option<i64>,
     pub destination_id: String,
@@ -5179,17 +5324,17 @@ pub struct SecretKey {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     pub token_type: SecretKeyTokenType,
-    pub issued_at: String,
+    pub issued_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     pub status: SecretKeyStatus,
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revoked_at: Option<String>,
+    pub revoked_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_used_at: Option<String>,
+    pub last_used_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage_count: Option<i64>,
 }
@@ -5239,7 +5384,7 @@ pub struct SecretKeyUsageRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SecretKeyUsageRow {
     pub secret_key_id: String,
-    pub occurred_at: String,
+    pub occurred_at: crate::Timestamp,
     pub auth_result: SecretKeyAuthResult,
 }
 
@@ -5400,7 +5545,7 @@ pub struct UpdateOrderRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finalize: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<Vec<serde_json::Value>>,
+    pub line_items: Option<Vec<LineItemInput>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5523,7 +5668,7 @@ pub struct UpdateProductRequest {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UpdatePurchaseIntentRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<String>,
+    pub expires_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5574,9 +5719,9 @@ pub struct UpdatedProduct {
     pub prices: Option<Vec<ProductPriceSummary>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit_dim: Option<String>,
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
+    pub updated_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -5612,17 +5757,17 @@ pub struct UploadRequest {
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<FileMetadata>,
-    pub created_at: String,
-    pub updated_at: String,
-    pub expires_at: String,
+    pub created_at: crate::Timestamp,
+    pub updated_at: crate::Timestamp,
+    pub expires_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uploading_at: Option<String>,
+    pub uploading_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fulfilled_at: Option<String>,
+    pub fulfilled_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expired_at: Option<String>,
+    pub expired_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<String>,
+    pub canceled_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attempt: Option<UploadRequestAttempt>,
 }
@@ -5643,7 +5788,7 @@ pub struct UploadRequestActor {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UploadRequestAttempt {
-    pub attempted_at: String,
+    pub attempted_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5651,7 +5796,7 @@ pub struct UploadRequestAttempt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<UploadRequestLatestError>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failed_at: Option<String>,
+    pub failed_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5662,7 +5807,7 @@ pub struct UploadRequestAttempt {
     pub review: Option<UploadRequestReview>,
     pub status: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub succeeded_at: Option<String>,
+    pub succeeded_at: Option<crate::Timestamp>,
     pub upload_request_id: String,
 }
 
@@ -5674,7 +5819,7 @@ pub struct UploadRequestAttempts {
     pub attempt_count: i64,
     pub failed_attempt_count: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub last_attempted_at: Option<String>,
+    pub last_attempted_at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro request parameters.
@@ -5752,7 +5897,7 @@ pub struct UploadRequestLatestError {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retryable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub at: Option<String>,
+    pub at: Option<crate::Timestamp>,
 }
 
 /// Typed Inttegro domain value.
@@ -5766,7 +5911,7 @@ pub struct UploadRequestPage {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UploadRequestReview {
-    pub created_at: String,
+    pub created_at: crate::Timestamp,
     pub decision: UploadReviewDecision,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file_id: Option<String>,
@@ -5774,7 +5919,7 @@ pub struct UploadRequestReview {
     pub public_message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reasons: Option<Vec<UploadRequestReviewReason>>,
-    pub reviewed_at: String,
+    pub reviewed_at: crate::Timestamp,
     #[serde(rename = "type")]
     pub r#type: UploadReviewType,
 }
