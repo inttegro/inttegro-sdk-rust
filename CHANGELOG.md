@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+- Breaking: replaced generic maps with named models for balances, purchase intents, products, payment methods, payments, and orders.
+- Breaking: exposed API timestamps through the strongly typed `Timestamp` value.
+
 ## 0.1.1
 
 - Tightened financial-account and payment-method response models to exclude internal platform fields.
