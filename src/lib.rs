@@ -2,6 +2,7 @@
 
 mod balance_snapshot;
 mod generated;
+mod resource_semantics;
 mod resources;
 mod semantic_collections;
 mod timestamp;

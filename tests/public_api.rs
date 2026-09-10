@@ -97,6 +97,10 @@ fn purchase_intent_exposes_nested_response_types() {
     }))
     .unwrap();
 
+    assert!(intent.is_active());
+    assert!(intent.is_single_use());
+    assert_eq!(intent.used_order_id(), Some("or_123"));
+
     assert_eq!(
         intent.activity.unwrap().recent.unwrap()[0]
             .visitor
@@ -122,6 +126,46 @@ fn purchase_intent_exposes_nested_response_types() {
         Some(1_024.0)
     );
     assert_eq!(intent.usage.order.unwrap().id, "or_123");
+}
+
+#[test]
+fn resources_answer_protocol_questions() {
+    let payment: inttegro::Payment = serde_json::from_value(serde_json::json!({
+        "amount": {"currency": "ghs", "value": 1000},
+        "id": "py_123",
+        "initiated_at": "2026-09-09T12:00:00Z",
+        "next_action": {"type": "redirect"},
+        "statement_descriptor": "INTTEGRO",
+        "status": "requires_action"
+    }))
+    .unwrap();
+    assert!(payment.requires_action());
+    assert!(!payment.is_terminal());
+    assert!(payment.required_action().is_some());
+
+    let product: inttegro::Product = serde_json::from_value(serde_json::json!({
+        "active": true,
+        "created_at": "2026-09-09T12:00:00Z",
+        "id": "prod_123",
+        "name": "Tea guide",
+        "published_at": "2026-09-09T12:00:00Z",
+        "type": "digital"
+    }))
+    .unwrap();
+    assert!(product.is_published());
+    assert!(product.was_ever_published());
+
+    let method: inttegro::PaymentMethod = serde_json::from_value(serde_json::json!({
+        "active": true,
+        "created_at": "2026-09-09T12:00:00Z",
+        "customer_id": "cu_123",
+        "id": "pm_123",
+        "type": "mobile_money",
+        "verified_at": "2026-09-09T12:00:00Z"
+    }))
+    .unwrap();
+    assert!(method.is_verified());
+    assert!(method.is_reusable());
 }
 
 #[tokio::test]
