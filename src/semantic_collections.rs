@@ -342,8 +342,8 @@ pub struct FinancialAccountVerificationRequest {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FinancialAccountVerification {
-    pub initiated_at: String,
-    pub completed_at: Option<String>,
+    pub initiated_at: crate::Timestamp,
+    pub completed_at: Option<crate::Timestamp>,
     pub request: FinancialAccountVerificationRequest,
 }
 
@@ -374,21 +374,6 @@ pub struct Address {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Shipping {
     pub address: Address,
-}
-
-/// Account balances keyed by currency.
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
-#[serde(transparent)]
-pub struct BalanceSnapshot(BTreeMap<String, crate::CurrencyBalanceSnapshot>);
-
-impl BalanceSnapshot {
-    pub fn get(&self, currency: &str) -> Option<&crate::CurrencyBalanceSnapshot> {
-        self.0.get(currency)
-    }
-
-    pub fn iter(&self) -> impl Iterator<Item = (&String, &crate::CurrencyBalanceSnapshot)> {
-        self.0.iter()
-    }
 }
 
 /// Customer balances keyed by currency.

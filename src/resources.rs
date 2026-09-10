@@ -1842,32 +1842,6 @@ impl Orders {
             )
             .await
     }
-
-    /// Create a refund using the compatibility URL
-    pub async fn refund(&self, request: &CreateRefundRequest) -> Result<Refund> {
-        self.refund_with_options(request, RequestOptions::default())
-            .await
-    }
-    /// Create a refund using the compatibility URL with per-request options.
-    pub async fn refund_with_options(
-        &self,
-        request: &CreateRefundRequest,
-        options: RequestOptions,
-    ) -> Result<Refund> {
-        self.client
-            .request_resource(
-                RequestSpec {
-                    method: "POST",
-                    path: "/orders/refund",
-                    operation: "orders.refund",
-                    field: Some("refund"),
-                    authenticated: true,
-                },
-                Some(request),
-                options,
-            )
-            .await
-    }
 }
 
 /// Operations for Inttegro otp.
