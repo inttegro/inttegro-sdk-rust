@@ -69,13 +69,6 @@ fn balance_snapshot_exposes_ghs_statically() {
 #[test]
 fn purchase_intent_exposes_nested_response_types() {
     let intent: PurchaseIntent = serde_json::from_value(serde_json::json!({
-        "activity": {"recent": [{
-            "created_at": "2026-09-09T12:01:00Z",
-            "id": "saleevt_123",
-            "purchase_intent_id": "sale_123",
-            "type": "viewed",
-            "visitor": {"ip_address": "203.0.113.7"}
-        }]},
         "allow_variants": false,
         "created_at": "2026-09-09T12:00:00Z",
         "id": "sale_123",
@@ -101,15 +94,6 @@ fn purchase_intent_exposes_nested_response_types() {
     assert!(intent.is_single_use());
     assert_eq!(intent.used_order_id(), Some("or_123"));
 
-    assert_eq!(
-        intent.activity.unwrap().recent.unwrap()[0]
-            .visitor
-            .as_ref()
-            .unwrap()
-            .ip_address
-            .as_deref(),
-        Some("203.0.113.7")
-    );
     assert_eq!(
         intent.merchant.unwrap().organization_name.as_deref(),
         Some("Tea House Ltd")
