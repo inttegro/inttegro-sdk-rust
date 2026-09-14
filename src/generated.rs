@@ -599,21 +599,6 @@ pub enum ProductType {
     Cause,
 }
 
-/// A typed `PurchaseIntentActivityType` value used by the Inttegro API.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PurchaseIntentActivityType {
-    #[serde(rename = "expired_viewed")]
-    ExpiredViewed,
-    #[serde(rename = "order_created")]
-    OrderCreated,
-    #[serde(rename = "payment_failed")]
-    PaymentFailed,
-    #[serde(rename = "payment_started")]
-    PaymentStarted,
-    #[serde(rename = "viewed")]
-    Viewed,
-}
-
 /// A typed `PurchaseIntentStatus` value used by the Inttegro API.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PurchaseIntentStatus {
@@ -4346,6 +4331,8 @@ pub struct PayoutSettingsMutation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destinations: Option<PayoutDestinations>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fx_enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<PayoutSettingsMutationSchedule>,
@@ -4777,8 +4764,6 @@ pub struct PublicFileStorage {
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PurchaseIntent {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub activity: Option<PurchaseIntentActivityLog>,
     pub allow_variants: bool,
     pub created_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4799,93 +4784,6 @@ pub struct PurchaseIntent {
     pub usage: PurchaseIntentUsage,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variant_set: Option<PurchaseIntentVariantSet>,
-}
-
-/// Typed Inttegro domain value.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PurchaseIntentActivityLog {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub recent: Option<Vec<PurchaseIntentActivity>>,
-}
-
-/// Typed Inttegro domain value.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PurchaseIntentActivity {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Amount>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attribution: Option<PurchaseIntentActivityAttribution>,
-    pub created_at: crate::Timestamp,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error_code: Option<String>,
-    pub id: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub order_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub payment_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub product_id: Option<String>,
-    pub purchase_intent_id: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
-    #[serde(rename = "type")]
-    pub r#type: PurchaseIntentActivityType,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variant_product_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub visitor: Option<PurchaseIntentActivityVisitor>,
-}
-
-/// Typed Inttegro domain value.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PurchaseIntentActivityAttribution {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub campaign: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub channel: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub content: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub landing_url: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub referrer: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub referrer_host: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub term: Option<String>,
-}
-
-/// Typed Inttegro domain value.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PurchaseIntentActivityVisitor {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub browser: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub city: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub device: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub os: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub session_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timezone: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub visitor_id: Option<String>,
 }
 
 /// Typed Inttegro domain value.
