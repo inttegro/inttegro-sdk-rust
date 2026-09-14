@@ -1,6 +1,7 @@
 use inttegro::{
-    BalanceSnapshot, Client, CreateOrderRequest, CustomData, CustomDataPatch, Order,
-    PayoutSettingsMutation, PurchaseIntent, RequestOptions,
+    BalanceSnapshot, Client, CreateOrderRequest, Currency, CustomData, CustomDataPatch, Order,
+    PayoutSettingsMutation, PurchaseIntent, Refund, RefundSettlement,
+    RefundSettlementPaymentMethod, RequestOptions,
 };
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -13,6 +14,28 @@ fn public_types_are_concurrency_safe() {
     assert_send_sync::<Order>();
     assert_send_sync::<CreateOrderRequest>();
     let _ = RequestOptions::default();
+}
+
+#[test]
+fn currency_constants_preserve_iso_codes_and_lowercase_wire_values() {
+    let currencies = [
+        (Currency::GHS, "ghs"),
+        (Currency::USD, "usd"),
+        (Currency::GBP, "gbp"),
+        (Currency::EUR, "eur"),
+        (Currency::CNY, "cny"),
+    ];
+
+    for (currency, wire_value) in currencies {
+        assert_eq!(
+            serde_json::to_value(currency).unwrap(),
+            serde_json::json!(wire_value)
+        );
+        assert_eq!(
+            serde_json::from_value::<Currency>(serde_json::json!(wire_value)).unwrap(),
+            currency
+        );
+    }
 }
 
 #[test]
@@ -124,6 +147,58 @@ fn payout_settings_expose_known_destinations_statically() {
     let destinations = settings.destinations.unwrap();
     assert_eq!(destinations.ghs.as_deref(), Some("fa_123"));
     assert_eq!(settings.fx_enabled, Some(true));
+}
+
+#[test]
+fn refund_settlement_is_discriminated_and_masked() {
+    let refund: Refund = serde_json::from_value(serde_json::json!({
+        "created_at": "2026-09-09T12:00:00Z",
+        "id": "rf_123",
+        "line_items": [],
+        "order_id": "or_123",
+        "reason": "requested_by_customer",
+        "settlement": {
+            "type": "payment_method",
+            "payment_method": {
+                "id": "pm_123",
+                "type": "bank_account",
+                "bank_account": {
+                    "type": "ghana_bank_account",
+                    "ghana_bank_account": {
+                        "account_number": "****1234",
+                        "last4": "1234"
+                    }
+                }
+            }
+        },
+        "status": "pending",
+        "total": {"currency": "ghs", "value": 1000}
+    }))
+    .unwrap();
+
+    let RefundSettlement::PaymentMethod { payment_method } = refund.settlement else {
+        panic!("expected payment-method settlement");
+    };
+    let RefundSettlementPaymentMethod::BankAccount { bank_account, .. } = payment_method else {
+        panic!("expected bank-account snapshot");
+    };
+    let inttegro::RefundSettlementBankAccount::GhanaBankAccount { ghana_bank_account } =
+        bank_account;
+    assert_eq!(ghana_bank_account.account_number, "****1234");
+
+    assert!(
+        serde_json::from_value::<RefundSettlement>(serde_json::json!({
+            "type": "offline",
+            "payment_method": {"id": "pm_123", "type": "mobile_money"}
+        }))
+        .is_err()
+    );
+    assert!(
+        serde_json::from_value::<RefundSettlement>(serde_json::json!({
+            "type": "payment_method"
+        }))
+        .is_err()
+    );
 }
 
 #[test]
