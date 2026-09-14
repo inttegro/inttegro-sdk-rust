@@ -133,18 +133,19 @@ pub enum ContentSafetyStatus {
 }
 
 /// A typed `Currency` value used by the Inttegro API.
+#[allow(non_camel_case_types, clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Currency {
     #[serde(rename = "ghs")]
-    Ghs,
+    GHS,
     #[serde(rename = "usd")]
-    Usd,
+    USD,
     #[serde(rename = "gbp")]
-    Gbp,
+    GBP,
     #[serde(rename = "eur")]
-    Eur,
+    EUR,
     #[serde(rename = "cny")]
-    Cny,
+    CNY,
 }
 
 /// A typed `DeliveryChannel` value used by the Inttegro API.
@@ -4963,10 +4964,61 @@ pub struct Refund {
     pub reason_details: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
+    pub settlement: RefundSettlement,
     pub status: RefundStatus,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub succeeded_at: Option<crate::Timestamp>,
     pub total: Amount,
+}
+
+/// Immutable settlement evidence captured when a refund is created.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
+pub enum RefundSettlement {
+    Offline,
+    PaymentMethod {
+        payment_method: RefundSettlementPaymentMethod,
+    },
+}
+
+/// A safe snapshot of the original payment method used for the order.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
+pub enum RefundSettlementPaymentMethod {
+    MobileMoney {
+        id: String,
+        mobile_money: RefundSettlementMobileMoney,
+    },
+    BankAccount {
+        id: String,
+        bank_account: RefundSettlementBankAccount,
+    },
+}
+
+/// Safe mobile-money details retained in refund history.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RefundSettlementMobileMoney {
+    pub account_number: String,
+    pub last4: String,
+    pub network: MobileMoneyNetwork,
+}
+
+/// Safe bank-account details retained in refund history.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
+pub enum RefundSettlementBankAccount {
+    GhanaBankAccount {
+        ghana_bank_account: RefundSettlementGhanaBankAccount,
+    },
+}
+
+/// Safe Ghana bank-account routing details retained in refund history.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RefundSettlementGhanaBankAccount {
+    pub account_number: String,
+    pub last4: String,
 }
 
 /// Typed Inttegro domain value.
