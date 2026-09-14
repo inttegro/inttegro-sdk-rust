@@ -1,6 +1,6 @@
 use inttegro::{
     BalanceSnapshot, Client, CreateOrderRequest, CustomData, CustomDataPatch, Order,
-    PurchaseIntent, RequestOptions,
+    PayoutSettingsMutation, PurchaseIntent, RequestOptions,
 };
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -69,13 +69,6 @@ fn balance_snapshot_exposes_ghs_statically() {
 #[test]
 fn purchase_intent_exposes_nested_response_types() {
     let intent: PurchaseIntent = serde_json::from_value(serde_json::json!({
-        "activity": {"recent": [{
-            "created_at": "2026-09-09T12:01:00Z",
-            "id": "saleevt_123",
-            "purchase_intent_id": "sale_123",
-            "type": "viewed",
-            "visitor": {"ip_address": "203.0.113.7"}
-        }]},
         "allow_variants": false,
         "created_at": "2026-09-09T12:00:00Z",
         "id": "sale_123",
@@ -97,15 +90,10 @@ fn purchase_intent_exposes_nested_response_types() {
     }))
     .unwrap();
 
-    assert_eq!(
-        intent.activity.unwrap().recent.unwrap()[0]
-            .visitor
-            .as_ref()
-            .unwrap()
-            .ip_address
-            .as_deref(),
-        Some("203.0.113.7")
-    );
+    assert!(intent.is_active());
+    assert!(intent.is_single_use());
+    assert_eq!(intent.used_order_id(), Some("or_123"));
+
     assert_eq!(
         intent.merchant.unwrap().organization_name.as_deref(),
         Some("Tea House Ltd")
@@ -122,6 +110,60 @@ fn purchase_intent_exposes_nested_response_types() {
         Some(1_024.0)
     );
     assert_eq!(intent.usage.order.unwrap().id, "or_123");
+}
+
+#[test]
+fn payout_settings_expose_known_destinations_statically() {
+    let settings: PayoutSettingsMutation = serde_json::from_value(serde_json::json!({
+        "destinations": {"ghs": "fa_123"},
+        "fx_enabled": true,
+        "id": "settings_123"
+    }))
+    .unwrap();
+
+    let destinations = settings.destinations.unwrap();
+    assert_eq!(destinations.ghs.as_deref(), Some("fa_123"));
+    assert_eq!(settings.fx_enabled, Some(true));
+}
+
+#[test]
+fn resources_answer_protocol_questions() {
+    let payment: inttegro::Payment = serde_json::from_value(serde_json::json!({
+        "amount": {"currency": "ghs", "value": 1000},
+        "id": "py_123",
+        "initiated_at": "2026-09-09T12:00:00Z",
+        "next_action": {"type": "redirect"},
+        "statement_descriptor": "INTTEGRO",
+        "status": "requires_action"
+    }))
+    .unwrap();
+    assert!(payment.requires_action());
+    assert!(!payment.is_terminal());
+    assert!(payment.required_action().is_some());
+
+    let product: inttegro::Product = serde_json::from_value(serde_json::json!({
+        "active": true,
+        "created_at": "2026-09-09T12:00:00Z",
+        "id": "prod_123",
+        "name": "Tea guide",
+        "published_at": "2026-09-09T12:00:00Z",
+        "type": "digital"
+    }))
+    .unwrap();
+    assert!(product.is_published());
+    assert!(product.was_ever_published());
+
+    let method: inttegro::PaymentMethod = serde_json::from_value(serde_json::json!({
+        "active": true,
+        "created_at": "2026-09-09T12:00:00Z",
+        "customer_id": "cu_123",
+        "id": "pm_123",
+        "type": "mobile_money",
+        "verified_at": "2026-09-09T12:00:00Z"
+    }))
+    .unwrap();
+    assert!(method.is_verified());
+    assert!(method.is_reusable());
 }
 
 #[tokio::test]
