@@ -1,6 +1,6 @@
 use inttegro::{
     BalanceSnapshot, Client, CreateOrderRequest, CustomData, CustomDataPatch, Order,
-    PurchaseIntent, RequestOptions,
+    PayoutSettingsMutation, PurchaseIntent, RequestOptions,
 };
 use std::io::{Read, Write};
 use std::net::TcpListener;
@@ -110,6 +110,20 @@ fn purchase_intent_exposes_nested_response_types() {
         Some(1_024.0)
     );
     assert_eq!(intent.usage.order.unwrap().id, "or_123");
+}
+
+#[test]
+fn payout_settings_expose_known_destinations_statically() {
+    let settings: PayoutSettingsMutation = serde_json::from_value(serde_json::json!({
+        "destinations": {"ghs": "fa_123"},
+        "fx_enabled": true,
+        "id": "settings_123"
+    }))
+    .unwrap();
+
+    let destinations = settings.destinations.unwrap();
+    assert_eq!(destinations.ghs.as_deref(), Some("fa_123"));
+    assert_eq!(settings.fx_enabled, Some(true));
 }
 
 #[test]

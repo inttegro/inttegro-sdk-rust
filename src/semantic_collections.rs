@@ -286,13 +286,17 @@ string_collection!(
 );
 string_collection!(MessageHeaders, "Message headers keyed by header name.");
 string_collection!(
-    PayoutDestinations,
-    "Payout destinations keyed by currency or configured route."
-);
-string_collection!(
     ProductDimensionDetails,
     "Custom product-dimension details keyed by attribute name."
 );
+
+/// Financial accounts configured to receive payouts in supported currencies.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PayoutDestinations {
+    /// Financial account that receives Ghana cedi payouts.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ghs: Option<String>,
+}
 string_collection!(
     VariantValues,
     "Selected product variant values keyed by attribute name."

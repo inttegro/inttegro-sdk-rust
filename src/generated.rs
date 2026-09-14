@@ -4331,6 +4331,8 @@ pub struct PayoutSettingsMutation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destinations: Option<PayoutDestinations>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fx_enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<PayoutSettingsMutationSchedule>,
