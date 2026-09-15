@@ -3,13 +3,17 @@
 mod balance_snapshot;
 mod generated;
 mod resource_semantics;
-mod resources;
 mod semantic_collections;
 mod timestamp;
 
 pub use balance_snapshot::*;
-pub use generated::*;
-pub use resources::*;
+use generated::*;
+pub use generated::{
+    app, balance, balance_transaction, bank_account, broadcast, checkout, chime, country, customer,
+    file, file_link, financial_account, message_template, money, order, otp, payment,
+    payment_method, payout, price, product, purchase_intent, refund, secret_key, shared,
+    upload_request, wallet,
+};
 pub use semantic_collections::*;
 pub use timestamp::*;
 

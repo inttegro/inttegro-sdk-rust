@@ -1,8 +1,9 @@
-use inttegro::{
-    BalanceSnapshot, Client, CreateOrderRequest, Currency, CustomData, CustomDataPatch, Order,
-    PayoutSettingsMutation, PurchaseIntent, Refund, RefundSettlement,
-    RefundSettlementPaymentMethod, RequestOptions,
-};
+use inttegro::money::Currency;
+use inttegro::order::{CreateOrderRequest, Order};
+use inttegro::payout::PayoutSettingsMutation;
+use inttegro::purchase_intent::PurchaseIntent;
+use inttegro::refund::{Refund, RefundSettlement, RefundSettlementPaymentMethod};
+use inttegro::{BalanceSnapshot, Client, CustomData, CustomDataPatch, RequestOptions};
 use std::io::{Read, Write};
 use std::net::TcpListener;
 
@@ -14,6 +15,16 @@ fn public_types_are_concurrency_safe() {
     assert_send_sync::<Order>();
     assert_send_sync::<CreateOrderRequest>();
     let _ = RequestOptions::default();
+}
+
+#[test]
+fn resource_modules_expose_canonical_models_and_clients() {
+    let _: Option<inttegro::order::Order> = None;
+    let _: Option<inttegro::order::Orders> = None;
+    let _: Option<inttegro::payment_method::PaymentMethod> = None;
+    let _: Option<inttegro::payment_method::PaymentMethods> = None;
+    let _: Option<inttegro::refund::Refund> = None;
+    let _: Option<inttegro::country::CountrySpecification> = None;
 }
 
 #[test]
@@ -182,7 +193,7 @@ fn refund_settlement_is_discriminated_and_masked() {
     let RefundSettlementPaymentMethod::BankAccount { bank_account, .. } = payment_method else {
         panic!("expected bank-account snapshot");
     };
-    let inttegro::RefundSettlementBankAccount::GhanaBankAccount { ghana_bank_account } =
+    let inttegro::refund::RefundSettlementBankAccount::GhanaBankAccount { ghana_bank_account } =
         bank_account;
     assert_eq!(ghana_bank_account.account_number, "****1234");
 
@@ -203,7 +214,7 @@ fn refund_settlement_is_discriminated_and_masked() {
 
 #[test]
 fn resources_answer_protocol_questions() {
-    let payment: inttegro::Payment = serde_json::from_value(serde_json::json!({
+    let payment: inttegro::payment::Payment = serde_json::from_value(serde_json::json!({
         "amount": {"currency": "ghs", "value": 1000},
         "id": "py_123",
         "initiated_at": "2026-09-09T12:00:00Z",
@@ -216,7 +227,7 @@ fn resources_answer_protocol_questions() {
     assert!(!payment.is_terminal());
     assert!(payment.required_action().is_some());
 
-    let product: inttegro::Product = serde_json::from_value(serde_json::json!({
+    let product: inttegro::product::Product = serde_json::from_value(serde_json::json!({
         "active": true,
         "created_at": "2026-09-09T12:00:00Z",
         "id": "prod_123",
@@ -228,15 +239,16 @@ fn resources_answer_protocol_questions() {
     assert!(product.is_published());
     assert!(product.was_ever_published());
 
-    let method: inttegro::PaymentMethod = serde_json::from_value(serde_json::json!({
-        "active": true,
-        "created_at": "2026-09-09T12:00:00Z",
-        "customer_id": "cu_123",
-        "id": "pm_123",
-        "type": "mobile_money",
-        "verified_at": "2026-09-09T12:00:00Z"
-    }))
-    .unwrap();
+    let method: inttegro::payment_method::PaymentMethod =
+        serde_json::from_value(serde_json::json!({
+            "active": true,
+            "created_at": "2026-09-09T12:00:00Z",
+            "customer_id": "cu_123",
+            "id": "pm_123",
+            "type": "mobile_money",
+            "verified_at": "2026-09-09T12:00:00Z"
+        }))
+        .unwrap();
     assert!(method.is_verified());
     assert!(method.is_reusable());
 }
