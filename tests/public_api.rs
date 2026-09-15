@@ -244,6 +244,7 @@ fn resources_answer_protocol_questions() {
             "active": true,
             "created_at": "2026-09-09T12:00:00Z",
             "customer_id": "cu_123",
+            "fingerprint": "fp_123",
             "id": "pm_123",
             "type": "mobile_money",
             "verified_at": "2026-09-09T12:00:00Z"
