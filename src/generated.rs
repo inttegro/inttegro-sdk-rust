@@ -3850,6 +3850,7 @@ pub struct PaymentMethod {
     pub ephemeral: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires_on: Option<crate::Timestamp>,
+    pub fingerprint: String,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mobile_money: Option<PaymentMethodMobileMoney>,
