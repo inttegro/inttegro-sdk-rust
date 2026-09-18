@@ -165,7 +165,18 @@ fn refund_settlement_is_discriminated_and_masked() {
     let refund: Refund = serde_json::from_value(serde_json::json!({
         "created_at": "2026-09-09T12:00:00Z",
         "id": "rf_123",
-        "line_items": [],
+        "line_items": [{
+            "id": "rli_123",
+            "order_line_item_id": "oli_123",
+            "order_line_item": {
+                "id": "oli_123",
+                "type": "product",
+                "quantity": 2,
+                "product": {"id": "prod_123", "name": "Premium subscription"}
+            },
+            "original_amount_paid": {"currency": "ghs", "value": 2000},
+            "refund_amount": {"currency": "ghs", "value": 1000}
+        }],
         "order_id": "or_123",
         "reason": "requested_by_customer",
         "settlement": {
@@ -196,6 +207,14 @@ fn refund_settlement_is_discriminated_and_masked() {
     let inttegro::refund::RefundSettlementBankAccount::GhanaBankAccount { ghana_bank_account } =
         bank_account;
     assert_eq!(ghana_bank_account.account_number, "****1234");
+    let RefundOrderLineItem::Product {
+        quantity, product, ..
+    } = refund.line_items[0].order_line_item.as_ref().unwrap()
+    else {
+        panic!("expected product order-line snapshot");
+    };
+    assert_eq!(*quantity, 2);
+    assert_eq!(product.id.as_deref(), Some("prod_123"));
 
     assert!(
         serde_json::from_value::<RefundSettlement>(serde_json::json!({

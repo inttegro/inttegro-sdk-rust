@@ -14,6 +14,8 @@ mod page_refunds_request;
 pub use page_refunds_request::*;
 mod refund_line_item;
 pub use refund_line_item::*;
+mod refund_order_line_item;
+pub use refund_order_line_item::*;
 mod refund_page;
 pub use refund_page::*;
 mod refund_reason;
