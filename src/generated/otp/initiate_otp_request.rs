@@ -1,6 +1,6 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::OTPAlphabetType;
+use crate::{OTPAlphabetType, OTPPurpose};
 use serde::{Deserialize, Serialize};
 
 /// Typed Inttegro request parameters.
@@ -10,8 +10,7 @@ pub struct InitiateOTPRequest {
     pub async_delivery: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message_template: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub purpose: Option<String>,
+    pub purpose: OTPPurpose,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sender: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

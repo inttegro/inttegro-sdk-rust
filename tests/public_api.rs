@@ -1,5 +1,6 @@
 use inttegro::money::Currency;
 use inttegro::order::{CreateOrderRequest, Order};
+use inttegro::otp::OTPPurpose;
 use inttegro::payout::PayoutSettingsMutation;
 use inttegro::purchase_intent::PurchaseIntent;
 use inttegro::refund::{Refund, RefundSettlement, RefundSettlementPaymentMethod};
@@ -47,6 +48,14 @@ fn currency_constants_preserve_iso_codes_and_lowercase_wire_values() {
             currency
         );
     }
+}
+
+#[test]
+fn otp_purposes_preserve_closed_wire_values() {
+    assert_eq!(
+        serde_json::to_value(OTPPurpose::SignIn).unwrap(),
+        serde_json::json!("sign_in")
+    );
 }
 
 #[test]

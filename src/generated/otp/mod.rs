@@ -6,6 +6,8 @@ mod lookup_otp_request;
 pub use lookup_otp_request::*;
 mod otp_alphabet_type;
 pub use otp_alphabet_type::*;
+mod otp_purpose;
+pub use otp_purpose::*;
 mod otp_status;
 pub use otp_status::*;
 mod otp_transaction;
