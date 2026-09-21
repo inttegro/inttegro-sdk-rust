@@ -46,6 +46,8 @@ pub mod purchase_intent;
 pub use purchase_intent::*;
 pub mod refund;
 pub use refund::*;
+pub mod search;
+pub use search::*;
 pub mod secret_key;
 pub use secret_key::*;
 pub mod shared;

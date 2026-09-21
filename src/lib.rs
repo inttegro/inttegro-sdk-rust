@@ -11,7 +11,7 @@ use generated::*;
 pub use generated::{
     app, balance, balance_transaction, bank_account, broadcast, checkout, chime, country, customer,
     file, file_link, financial_account, message_template, money, order, otp, payment,
-    payment_method, payout, price, product, purchase_intent, refund, secret_key, shared,
+    payment_method, payout, price, product, purchase_intent, refund, search, secret_key, shared,
     upload_request, wallet,
 };
 pub use semantic_collections::*;

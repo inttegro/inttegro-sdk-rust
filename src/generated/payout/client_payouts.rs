@@ -201,6 +201,32 @@ impl Payouts {
             .await
     }
 
+    /// Search payouts.
+    pub async fn search(&self, request: &ResourceSearchRequest) -> Result<ResourceSearchPage> {
+        self.search_with_options(request, RequestOptions::default())
+            .await
+    }
+
+    pub async fn search_with_options(
+        &self,
+        request: &ResourceSearchRequest,
+        options: RequestOptions,
+    ) -> Result<ResourceSearchPage> {
+        self.client
+            .request_resource(
+                RequestSpec {
+                    method: "POST",
+                    path: "/payouts/search",
+                    operation: "payouts.search",
+                    field: Some("search"),
+                    authenticated: true,
+                },
+                Some(request),
+                options,
+            )
+            .await
+    }
+
     /// Cancel a scheduled payout
     pub async fn cancel(&self, request: &CancelPayoutRequest) -> Result<Payout> {
         self.cancel_with_options(request, RequestOptions::default())

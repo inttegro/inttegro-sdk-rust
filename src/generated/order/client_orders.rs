@@ -339,4 +339,30 @@ impl Orders {
             )
             .await
     }
+
+    /// Search orders.
+    pub async fn search(&self, request: &ResourceSearchRequest) -> Result<ResourceSearchPage> {
+        self.search_with_options(request, RequestOptions::default())
+            .await
+    }
+
+    pub async fn search_with_options(
+        &self,
+        request: &ResourceSearchRequest,
+        options: RequestOptions,
+    ) -> Result<ResourceSearchPage> {
+        self.client
+            .request_resource(
+                RequestSpec {
+                    method: "POST",
+                    path: "/orders/search",
+                    operation: "orders.search",
+                    field: Some("search"),
+                    authenticated: true,
+                },
+                Some(request),
+                options,
+            )
+            .await
+    }
 }

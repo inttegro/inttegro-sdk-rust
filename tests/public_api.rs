@@ -3,7 +3,9 @@ use inttegro::order::{CreateOrderRequest, Order};
 use inttegro::otp::OTPPurpose;
 use inttegro::payout::PayoutSettingsMutation;
 use inttegro::purchase_intent::PurchaseIntent;
-use inttegro::refund::{Refund, RefundSettlement, RefundSettlementPaymentMethod};
+use inttegro::refund::{
+    Refund, RefundOrderLineItem, RefundSettlement, RefundSettlementPaymentMethod,
+};
 use inttegro::{BalanceSnapshot, Client, CustomData, CustomDataPatch, RequestOptions};
 use std::io::{Read, Write};
 use std::net::TcpListener;
