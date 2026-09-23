@@ -20,7 +20,8 @@ pub struct BalanceTransaction {
     pub claimed_at: Option<crate::Timestamp>,
     pub created_at: crate::Timestamp,
     pub id: String,
-    pub order_id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub order_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paid_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

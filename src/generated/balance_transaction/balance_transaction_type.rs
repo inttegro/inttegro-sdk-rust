@@ -9,4 +9,6 @@ pub enum BalanceTransactionType {
     Payment,
     #[serde(rename = "refund")]
     Refund,
+    #[serde(rename = "payout")]
+    Payout,
 }

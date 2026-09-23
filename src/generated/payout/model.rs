@@ -9,6 +9,8 @@ pub struct Payout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub amount: Option<Amount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub balance_transaction_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub balance_transactions: Option<Vec<PayoutBalanceTransaction>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<crate::Timestamp>,
