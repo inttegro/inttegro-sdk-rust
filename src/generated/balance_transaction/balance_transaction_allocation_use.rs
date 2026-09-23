@@ -5,6 +5,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct BalanceTransactionAllocationUse {
-	pub id: String,
-	pub amount: BalanceTransactionAmount,
+    pub id: String,
+    pub amount: BalanceTransactionAmount,
 }
