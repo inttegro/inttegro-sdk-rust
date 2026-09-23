@@ -112,6 +112,48 @@ fn balance_snapshot_exposes_ghs_statically() {
 }
 
 #[test]
+fn balance_transaction_exposes_all_public_allocations() {
+    let transaction: inttegro::balance_transaction::BalanceTransaction =
+        serde_json::from_value(serde_json::json!({
+            "id": "bt_1",
+            "type": "payment",
+            "payment_id": "py_1",
+            "order_id": "or_1",
+            "amount": {"currency": "ghs", "value": 2500},
+            "available_amount": {"currency": "ghs", "value": 1500},
+            "pending_amount": {"currency": "ghs", "value": 1000},
+            "spent_amount": {"currency": "ghs", "value": 0},
+            "allocations": [{
+            "id": "bta_1",
+            "type": "payout",
+            "status": "pending",
+            "payout": {
+                "id": "po_1",
+                "amount": {"currency": "ghs", "value": 1000}
+            },
+            "created_at": "2026-09-09T12:01:00Z",
+            "updated_at": "2026-09-09T12:01:00Z"
+            }],
+            "created_at": "2026-09-09T12:00:00Z"
+        }))
+        .unwrap();
+
+    assert_eq!(transaction.available_amount.unwrap().value, 1500);
+    let allocation = transaction.allocations.unwrap().into_iter().next().unwrap();
+    let inttegro::balance_transaction::BalanceTransactionAllocation::Payout {
+        payout, status, ..
+    } = allocation
+    else {
+        panic!("expected payout allocation");
+    };
+    assert_eq!(payout.id, "po_1");
+    assert_eq!(
+        status,
+        inttegro::balance_transaction::BalanceTransactionAllocationStatus::Pending
+    );
+}
+
+#[test]
 fn purchase_intent_exposes_nested_response_types() {
     let intent: PurchaseIntent = serde_json::from_value(serde_json::json!({
         "allow_variants": false,
