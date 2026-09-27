@@ -21,6 +21,20 @@ fn public_types_are_concurrency_safe() {
 }
 
 #[test]
+fn customer_fingerprint_is_required_and_round_trips() {
+    let current = serde_json::json!({
+        "balance": {}, "created_at": "2026-09-16T00:00:00Z", "guest": false,
+        "fingerprint": "cfp_v1_app_buyer", "id": "cu_123", "name": "Ama"
+    });
+    let customer: inttegro::customer::Customer = serde_json::from_value(current).unwrap();
+    assert_eq!(customer.fingerprint, "cfp_v1_app_buyer");
+    assert_eq!(
+        serde_json::to_value(customer).unwrap()["fingerprint"],
+        "cfp_v1_app_buyer"
+    );
+}
+
+#[test]
 fn resource_modules_expose_canonical_models_and_clients() {
     let _: Option<inttegro::order::Order> = None;
     let _: Option<inttegro::order::Orders> = None;
