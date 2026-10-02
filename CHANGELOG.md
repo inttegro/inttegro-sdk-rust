@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.2
+
+- Restored the broad Inttegro API description while retaining searchable
+  crates.io metadata.
+
 ## 0.6.1
 
 - Added searchable crates.io metadata and clearer GHS checkout and Ghana

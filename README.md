@@ -1,13 +1,13 @@
 # Inttegro Rust SDK
 
-Accept GHS payments and manage Ghana Mobile Money checkout, orders, refunds,
-and payouts with Inttegro's typed asynchronous Rust SDK.
+The official typed, asynchronous Rust client for server-side Inttegro
+integrations.
 
 ## Install
 
 ```toml
 [dependencies]
-inttegro = "0.6.1"
+inttegro = "0.6.2"
 ```
 
 ```rust,no_run
