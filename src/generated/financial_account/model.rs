@@ -18,6 +18,8 @@ pub struct FinancialAccount {
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub institution: Option<FinancialInstitution>,
