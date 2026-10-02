@@ -14,6 +14,7 @@ pub struct Customer {
     pub custom_data: Option<CustomData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_address: Option<String>,
+    pub fingerprint: String,
     pub guest: bool,
     pub id: String,
     pub name: String,

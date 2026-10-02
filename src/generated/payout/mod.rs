@@ -20,6 +20,8 @@ mod payout_configuration_destination;
 pub use payout_configuration_destination::*;
 mod payout_error;
 pub use payout_error::*;
+mod payout_balance_transaction;
+pub use payout_balance_transaction::*;
 mod payout_page;
 pub use payout_page::*;
 mod payout_settings_lookup;

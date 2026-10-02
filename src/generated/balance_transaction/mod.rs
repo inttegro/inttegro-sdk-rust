@@ -2,6 +2,12 @@
 
 mod balance_transaction_amount;
 pub use balance_transaction_amount::*;
+mod balance_transaction_allocation;
+pub use balance_transaction_allocation::*;
+mod balance_transaction_allocation_status;
+pub use balance_transaction_allocation_status::*;
+mod balance_transaction_allocation_use;
+pub use balance_transaction_allocation_use::*;
 mod balance_transaction_page;
 pub use balance_transaction_page::*;
 mod balance_transaction_type;
