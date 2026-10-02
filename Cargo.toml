@@ -1,9 +1,9 @@
 [package]
 name = "inttegro"
-version = "0.6.1"
+version = "0.6.2"
 edition = "2024"
 rust-version = "1.88"
-description = "Typed Rust SDK for Inttegro GHS checkout and Ghana Mobile Money payments"
+description = "Official server-side Rust SDK for Inttegro"
 license = "MIT"
 repository = "https://github.com/inttegro/inttegro-sdk-rust"
 homepage = "https://studio.inttegro.com/sdks/rust"
