@@ -1,6 +1,6 @@
 [package]
 name = "inttegro"
-version = "0.6.0"
+version = "0.6.2"
 edition = "2024"
 rust-version = "1.88"
 description = "Official server-side Rust SDK for Inttegro"
@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/inttegro/inttegro-sdk-rust"
 homepage = "https://studio.inttegro.com/sdks/rust"
 documentation = "https://docs.rs/inttegro"
-keywords = ["payments", "commerce", "inttegro"]
+keywords = ["payments", "checkout", "mobile-money", "ghana", "fintech"]
 categories = ["api-bindings", "web-programming::http-client"]
 
 [dependencies]

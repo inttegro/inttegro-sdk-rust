@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.2
+
+- Restored the broad Inttegro API description while retaining searchable
+  crates.io metadata.
+
+## 0.6.1
+
+- Added searchable crates.io metadata and clearer GHS checkout and Ghana
+  Mobile Money positioning for developers evaluating the SDK.
+
 ## 0.6.0
 
 - Added the required application-scoped customer fingerprint to typed customer

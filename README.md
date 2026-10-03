@@ -1,12 +1,13 @@
 # Inttegro Rust SDK
 
-The official typed, asynchronous Rust client for server-side Inttegro integrations.
+The official typed, asynchronous Rust client for server-side Inttegro
+integrations.
 
 ## Install
 
 ```toml
 [dependencies]
-inttegro = "0.1"
+inttegro = "0.6.2"
 ```
 
 ```rust,no_run
