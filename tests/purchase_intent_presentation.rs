@@ -1,4 +1,4 @@
-use inttegro::{
+use inttegro::purchase_intent::{
     CreatePurchaseIntentPresentation, CreatePurchaseIntentPresentationBuyPage,
     CreatePurchaseIntentPresentationBuyPageText, CreatePurchaseIntentRequest,
     CreatePurchaseIntentRequestQuantity, PurchaseIntent, UpdatePurchaseIntentPresentation,
