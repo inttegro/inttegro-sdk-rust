@@ -1,6 +1,6 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::UpdatePurchaseIntentRequestQuantity;
+use crate::{UpdatePurchaseIntentPresentation, UpdatePurchaseIntentRequestQuantity};
 use serde::{Deserialize, Serialize};
 
 /// Typed Inttegro request parameters.
@@ -16,4 +16,6 @@ pub struct UpdatePurchaseIntentRequest {
     pub purchase_intent_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reactivate: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub presentation: Option<UpdatePurchaseIntentPresentation>,
 }
