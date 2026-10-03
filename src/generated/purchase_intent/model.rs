@@ -1,8 +1,8 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
 use crate::{
-    PurchaseIntentMerchant, PurchaseIntentPrice, PurchaseIntentProduct, PurchaseIntentQuantity,
-    PurchaseIntentStatus, PurchaseIntentUsage, PurchaseIntentVariantSet,
+    PurchaseIntentMerchant, PurchaseIntentPresentation, PurchaseIntentPrice, PurchaseIntentProduct,
+    PurchaseIntentQuantity, PurchaseIntentStatus, PurchaseIntentUsage, PurchaseIntentVariantSet,
 };
 use serde::{Deserialize, Serialize};
 
@@ -20,6 +20,8 @@ pub struct PurchaseIntent {
     pub merchant: Option<PurchaseIntentMerchant>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub price: Option<PurchaseIntentPrice>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub presentation: Option<PurchaseIntentPresentation>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product: Option<PurchaseIntentProduct>,
     pub quantity: PurchaseIntentQuantity,
