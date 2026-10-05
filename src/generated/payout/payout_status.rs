@@ -15,8 +15,8 @@ pub enum PayoutStatus {
     Executing,
     #[serde(rename = "succeeded")]
     Succeeded,
-    #[serde(rename = "invalid")]
-    Invalid,
+    #[serde(rename = "failed")]
+    Failed,
     #[serde(rename = "canceled")]
     Canceled,
 }

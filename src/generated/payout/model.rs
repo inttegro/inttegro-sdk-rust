@@ -1,6 +1,8 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::{Amount, CustomData, PayoutBalanceTransaction, PayoutError, PayoutStatus};
+use crate::{
+    Amount, CustomData, PayoutBalanceTransaction, PayoutError, PayoutFailure, PayoutStatus,
+};
 use serde::{Deserialize, Serialize};
 
 /// Typed Inttegro domain value.
@@ -26,6 +28,8 @@ pub struct Payout {
     pub expected_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failed_at: Option<crate::Timestamp>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub failure: Option<PayoutFailure>,
     pub id: String,
     pub initiated_at: crate::Timestamp,
     #[serde(default, skip_serializing_if = "Option::is_none")]
