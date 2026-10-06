@@ -8,6 +8,4 @@ use serde::{Deserialize, Serialize};
 pub struct OrderInvoiceFormat {
     pub web: OrderDocumentFormat,
     pub pdf: OrderDocumentFormat,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub receipt: Option<OrderDocumentFormat>,
 }

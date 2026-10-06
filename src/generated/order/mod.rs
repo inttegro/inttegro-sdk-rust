@@ -82,6 +82,8 @@ mod order_product_line_item;
 pub use order_product_line_item::*;
 mod order_product_line_item_product;
 pub use order_product_line_item_product::*;
+mod order_receipt;
+pub use order_receipt::*;
 mod order_shipping_line_item;
 pub use order_shipping_line_item::*;
 mod order_shipping_line_item_shipping;

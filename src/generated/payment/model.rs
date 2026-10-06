@@ -1,8 +1,9 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
 use crate::{
-    Amount, BalanceTransaction, PaymentAttempt, PaymentBillingDetails, PaymentCustomer,
-    PaymentError, PaymentMethodSnapshot, PaymentNextAction, PaymentStatus, PayoutConfiguration,
+    Amount, BalanceTransaction, OrderReceipt, PaymentAttempt, PaymentBillingDetails,
+    PaymentCustomer, PaymentError, PaymentMethodSnapshot, PaymentNextAction, PaymentStatus,
+    PayoutConfiguration,
 };
 use serde::{Deserialize, Serialize};
 
@@ -21,6 +22,8 @@ pub struct Payment {
     pub payment_method: Option<PaymentMethodSnapshot>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub customer: Option<PaymentCustomer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub receipt: Option<OrderReceipt>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latest_attempt: Option<PaymentAttempt>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
