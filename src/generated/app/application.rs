@@ -2,6 +2,7 @@
 
 use crate::{ApplicationRelationship, ApplicationSecretKey};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 /// Typed Inttegro domain value.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -17,6 +18,7 @@ pub struct Application {
     pub updated_at: Option<crate::Timestamp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived_at: Option<crate::Timestamp>,
+    pub capabilities: HashMap<String, serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret_key: Option<ApplicationSecretKey>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

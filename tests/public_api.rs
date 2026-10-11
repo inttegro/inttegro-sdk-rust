@@ -348,7 +348,7 @@ async fn unwraps_the_wire_envelope_into_a_domain_value() {
         let (mut stream, _) = listener.accept().unwrap();
         let mut request = [0_u8; 4096];
         let _ = stream.read(&mut request).unwrap();
-        let body = r#"{"app":{"id":"app_test","name":"Test","created_at":"2026-09-07T00:00:00Z"}}"#;
+        let body = r#"{"app":{"id":"app_test","name":"Test","created_at":"2026-09-07T00:00:00Z","capabilities":{}}}"#;
         write!(
             stream,
             "HTTP/1.1 200 OK

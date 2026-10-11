@@ -12,6 +12,8 @@ mod application;
 pub use application::*;
 mod application_relationship;
 pub use application_relationship::*;
+mod application_relationship_parent;
+pub use application_relationship_parent::*;
 mod application_relationship_policy;
 pub use application_relationship_policy::*;
 mod application_secret_key;
