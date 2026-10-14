@@ -218,13 +218,16 @@ fn payout_settings_expose_known_destinations_statically() {
     let settings: PayoutSettingsMutation = serde_json::from_value(serde_json::json!({
         "destinations": {"ghs": "fa_123"},
         "fx_enabled": true,
-        "id": "settings_123"
+        "id": "settings_123",
+        "limits": {"amount": {"min": {"currency": "ghs", "value": 25000}, "max": {"currency": "ghs", "value": 9999999}}}
     }))
     .unwrap();
 
     let destinations = settings.destinations.unwrap();
     assert_eq!(destinations.ghs.as_deref(), Some("fa_123"));
     assert_eq!(settings.fx_enabled, Some(true));
+    assert_eq!(settings.limits.amount.min.value, 25_000);
+    assert_eq!(settings.limits.amount.max.value, 9_999_999);
 }
 
 #[test]
