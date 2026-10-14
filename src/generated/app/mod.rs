@@ -10,6 +10,8 @@ mod app_relationship_status;
 pub use app_relationship_status::*;
 mod application;
 pub use application::*;
+mod application_capabilities;
+pub use application_capabilities::*;
 mod application_relationship;
 pub use application_relationship::*;
 mod application_relationship_parent;

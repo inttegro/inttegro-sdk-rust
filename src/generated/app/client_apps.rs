@@ -67,6 +67,33 @@ impl Apps {
             .await
     }
 
+    /// Retrieve the authenticated application's payment and payout capabilities.
+    pub async fn capabilities(&self) -> Result<ApplicationCapabilities> {
+        self.capabilities_with_options(RequestOptions::default())
+            .await
+    }
+
+    /// Retrieve application capabilities with per-request options.
+    pub async fn capabilities_with_options(
+        &self,
+        options: RequestOptions,
+    ) -> Result<ApplicationCapabilities> {
+        let body = serde_json::json!({});
+        self.client
+            .request_resource(
+                RequestSpec {
+                    method: "POST",
+                    path: "/apps/capabilities",
+                    operation: "apps.capabilities",
+                    field: Some("capabilities"),
+                    authenticated: true,
+                },
+                Some(&body),
+                options,
+            )
+            .await
+    }
+
     /// Update the authenticated application
     pub async fn update(&self, request: &UpdateApplicationRequest) -> Result<Application> {
         self.update_with_options(request, RequestOptions::default())
