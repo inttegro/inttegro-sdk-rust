@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PayoutSettingsLookupScheduleAgingSpec {
     pub abide: String,
+    pub public_id: String,
     pub label: String,
     pub t_plus: String,
 }
