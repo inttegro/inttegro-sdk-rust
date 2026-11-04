@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PayoutSettingsMutationScheduleSpec {
     pub abide: String,
-    pub id: String,
+    pub public_id: String,
     pub label: String,
     pub t_plus: String,
 }
