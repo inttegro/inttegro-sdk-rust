@@ -78,3 +78,23 @@ pub struct ChildrenPolicy {
     pub updated_at: crate::Timestamp,
     pub version_created_at: crate::Timestamp,
 }
+
+/// Optional pagination parameters for listing children-policy versions.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PageChildrenPoliciesRequest {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub number: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<i64>,
+}
+
+/// A page of immutable children-policy versions, newest first.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ChildrenPolicyPage {
+    pub number: i64,
+    pub size: i64,
+    pub count: i64,
+    pub total: i64,
+    pub has_more: bool,
+    pub versions: Vec<ChildrenPolicy>,
+}
