@@ -9,10 +9,10 @@ mod timestamp;
 pub use balance_snapshot::*;
 use generated::*;
 pub use generated::{
-    app, balance, balance_transaction, bank_account, broadcast, checkout, chime, country, customer,
-    file, file_link, financial_account, message_template, money, order, otp, payment,
-    payment_method, payout, price, product, purchase_intent, refund, search, secret_key, shared,
-    upload_request, wallet,
+    app, balance, balance_transaction, bank_account, broadcast, checkout, children_policy, chime,
+    country, customer, file, file_link, financial_account, message_template, money,
+    operating_policy, order, otp, payment, payment_method, payout, price, product, purchase_intent,
+    refund, search, secret_key, shared, upload_request, wallet,
 };
 pub use semantic_collections::*;
 pub use timestamp::*;
@@ -213,6 +213,12 @@ impl Client {
 
     pub fn apps(&self) -> Apps {
         Apps::new(self.clone())
+    }
+    pub fn children_policies(&self) -> ChildrenPolicies {
+        ChildrenPolicies::new(self.clone())
+    }
+    pub fn operating_policies(&self) -> OperatingPolicies {
+        OperatingPolicies::new(self.clone())
     }
     pub fn balance_transactions(&self) -> BalanceTransactions {
         BalanceTransactions::new(self.clone())

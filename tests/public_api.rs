@@ -1,4 +1,7 @@
 use inttegro::money::Currency;
+use inttegro::operating_policy::{
+    OperatingPolicyCapabilitiesInput, OperatingPolicySelection, OperatingPolicySelectionById,
+};
 use inttegro::order::{CreateOrderRequest, Order};
 use inttegro::otp::OTPPurpose;
 use inttegro::payout::PayoutSettingsMutation;
@@ -42,6 +45,30 @@ fn resource_modules_expose_canonical_models_and_clients() {
     let _: Option<inttegro::payment_method::PaymentMethods> = None;
     let _: Option<inttegro::refund::Refund> = None;
     let _: Option<inttegro::country::CountrySpecification> = None;
+    let _: Option<inttegro::children_policy::ChildrenPolicy> = None;
+    let _: Option<inttegro::operating_policy::OperatingPolicy> = None;
+    let _: Option<inttegro::operating_policy::OperatingPolicies> = None;
+}
+
+#[test]
+fn operating_policy_selection_preserves_named_and_inline_wire_shapes() {
+    let named = OperatingPolicySelection::ById(OperatingPolicySelectionById {
+        id: "op_123".into(),
+    });
+    assert_eq!(
+        serde_json::to_value(named).unwrap(),
+        serde_json::json!({"id": "op_123"})
+    );
+
+    let inline = OperatingPolicySelection::Inline(
+        inttegro::operating_policy::InlineOperatingPolicySelection {
+            capabilities: OperatingPolicyCapabilitiesInput::default(),
+        },
+    );
+    assert_eq!(
+        serde_json::to_value(inline).unwrap(),
+        serde_json::json!({"capabilities": {}})
+    );
 }
 
 #[test]

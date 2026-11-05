@@ -1,5 +1,6 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
+use crate::OperatingPolicySelection;
 use serde::{Deserialize, Serialize};
 
 /// Typed Inttegro request parameters.
@@ -13,4 +14,6 @@ pub struct UpdateApplicationRequest {
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub legal_entity_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operating_policy: Option<OperatingPolicySelection>,
 }

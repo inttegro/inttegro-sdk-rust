@@ -1,6 +1,6 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::CreateApplicationRequestRelationshipPolicy;
+use crate::{CreateApplicationRequestRelationshipPolicy, OperatingPolicySelection};
 use serde::{Deserialize, Serialize};
 
 /// Typed Inttegro request parameters.
@@ -16,5 +16,7 @@ pub struct CreateApplicationRequest {
     pub placement_parent_application_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relationship_policy: Option<CreateApplicationRequestRelationshipPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operating_policy: Option<OperatingPolicySelection>,
     pub name: String,
 }
