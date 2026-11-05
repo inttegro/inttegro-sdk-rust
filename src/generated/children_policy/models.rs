@@ -68,7 +68,6 @@ pub struct ChildrenPolicyCapabilities {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ChildrenPolicy {
     pub id: String,
-    pub owner_application_id: String,
     pub version: u64,
     pub active_version: u64,
     pub name: String,
