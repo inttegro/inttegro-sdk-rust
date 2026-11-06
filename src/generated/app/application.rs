@@ -1,6 +1,8 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::{ApplicationOperatingPolicy, ApplicationRelationship, ApplicationSecretKey};
+use crate::{
+    ApplicationOperatingPolicy, ApplicationRelationship, ApplicationSecretKey, ChildrenPolicy,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -19,6 +21,8 @@ pub struct Application {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived_at: Option<crate::Timestamp>,
     pub capabilities: HashMap<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub children_policy: Option<ChildrenPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret_key: Option<ApplicationSecretKey>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

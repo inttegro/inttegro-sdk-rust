@@ -20,7 +20,7 @@ pub struct OperatingPolicyBTAgingSpecReference {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct OperatingPolicyBTAgingSpec {
-    pub public_id: String,
+    pub id: String,
     pub t_plus: String,
 }
 

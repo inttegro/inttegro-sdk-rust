@@ -47,22 +47,22 @@ fn policy_page_requests_and_responses_use_version_history_shape() {
 }
 
 #[test]
-fn policy_aging_specs_expose_public_id() {
+fn policy_aging_specs_expose_id() {
     let children: inttegro::children_policy::ChildrenPolicyBTAgingSpec =
         serde_json::from_value(serde_json::json!({
-            "public_id": "bt_aging_spec_immediate",
+            "id": "bt_aging_spec_immediate",
             "t_plus": "0h"
         }))
         .unwrap();
     let operating: inttegro::operating_policy::OperatingPolicyBTAgingSpec =
         serde_json::from_value(serde_json::json!({
-            "public_id": "bt_aging_spec_168_hourly",
+            "id": "bt_aging_spec_168_hourly",
             "t_plus": "168h"
         }))
         .unwrap();
 
-    assert_eq!(children.public_id, "bt_aging_spec_immediate");
-    assert_eq!(operating.public_id, "bt_aging_spec_168_hourly");
+    assert_eq!(children.id, "bt_aging_spec_immediate");
+    assert_eq!(operating.id, "bt_aging_spec_168_hourly");
 }
 
 fn children_policy(version: u64) -> serde_json::Value {

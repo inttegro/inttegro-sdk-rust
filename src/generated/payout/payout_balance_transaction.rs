@@ -1,6 +1,6 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::Amount;
+use crate::{Amount, PayoutBalanceTransactionStatus};
 use serde::{Deserialize, Serialize};
 
 /// A sparse view of one balance transaction's contribution to a payout.
@@ -12,4 +12,6 @@ pub struct PayoutBalanceTransaction {
     pub amount: Amount,
     /// Unique balance transaction identifier.
     pub id: String,
+    /// Whether this contribution remains reserved, completed, or released.
+    pub status: PayoutBalanceTransactionStatus,
 }

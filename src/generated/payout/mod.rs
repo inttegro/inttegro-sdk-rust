@@ -26,6 +26,8 @@ mod payout_failure_reason;
 pub use payout_failure_reason::*;
 mod payout_balance_transaction;
 pub use payout_balance_transaction::*;
+mod payout_balance_transaction_status;
+pub use payout_balance_transaction_status::*;
 mod payout_page;
 pub use payout_page::*;
 mod payout_amount_limits;

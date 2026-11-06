@@ -15,7 +15,7 @@ pub struct ChildrenPolicyLimits {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ChildrenPolicyBTAgingSpec {
-    pub public_id: String,
+    pub id: String,
     pub t_plus: String,
 }
 

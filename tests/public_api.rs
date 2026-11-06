@@ -4,7 +4,9 @@ use inttegro::operating_policy::{
 };
 use inttegro::order::{CreateOrderRequest, Order};
 use inttegro::otp::OTPPurpose;
-use inttegro::payout::PayoutSettingsMutation;
+use inttegro::payout::{
+    PayoutBalanceTransaction, PayoutBalanceTransactionStatus, PayoutSettingsMutation,
+};
 use inttegro::purchase_intent::PurchaseIntent;
 use inttegro::refund::{
     Refund, RefundOrderLineItem, RefundSettlement, RefundSettlementPaymentMethod,
@@ -98,6 +100,26 @@ fn otp_purposes_preserve_closed_wire_values() {
     assert_eq!(
         serde_json::to_value(OTPPurpose::SignIn).unwrap(),
         serde_json::json!("sign_in")
+    );
+}
+
+#[test]
+fn payout_contributions_expose_their_typed_allocation_status() {
+    let contribution: PayoutBalanceTransaction = serde_json::from_value(serde_json::json!({
+        "allocated_amount": {"currency": "ghs", "value": 12_500},
+        "amount": {"currency": "ghs", "value": 20_000},
+        "id": "bt_123",
+        "status": "reserved"
+    }))
+    .unwrap();
+
+    assert_eq!(
+        contribution.status,
+        PayoutBalanceTransactionStatus::Reserved
+    );
+    assert_eq!(
+        serde_json::to_value(contribution).unwrap()["status"],
+        serde_json::json!("reserved")
     );
 }
 
