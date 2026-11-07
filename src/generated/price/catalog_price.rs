@@ -12,7 +12,7 @@ pub struct CatalogPrice {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub about: Option<String>,
     pub active: bool,
-    pub nominal: Amount,
+    pub fixed_amount: Amount,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub product_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

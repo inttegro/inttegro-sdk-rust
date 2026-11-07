@@ -10,5 +10,5 @@ pub struct ProductPriceSummary {
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
-    pub nominal: Amount,
+    pub fixed_amount: Amount,
 }
