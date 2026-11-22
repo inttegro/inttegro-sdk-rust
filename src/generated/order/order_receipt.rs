@@ -1,6 +1,6 @@
 //! Generated, typed Inttegro domain or request value. Do not edit manually.
 
-use crate::OrderDocumentFormat;
+use crate::{OrderDocumentDeliverySummary, OrderDocumentFormat};
 use serde::{Deserialize, Serialize};
 
 /// Hosted document formats for a payment receipt.
@@ -17,5 +17,5 @@ pub struct OrderReceipt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delivery_summary: Option<serde_json::Value>,
+    pub delivery_summary: Option<OrderDocumentDeliverySummary>,
 }

@@ -8,6 +8,4 @@ use serde::{Deserialize, Serialize};
 pub struct OrderDocumentDeliveryFailure {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<DeliveryChannel>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
 }

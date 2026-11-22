@@ -52,3 +52,12 @@ pub struct ApplicationCapabilities {
     pub payments: ApplicationCapability,
     pub payouts: ApplicationCapability,
 }
+
+/// Known capability states currently exposed on an application resource.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub struct ApplicationCapabilityProjection {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payments: Option<ApplicationCapability>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payouts: Option<ApplicationCapability>,
+}

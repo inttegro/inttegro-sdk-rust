@@ -2,8 +2,6 @@
 
 mod cancel_schedule_request;
 pub use cancel_schedule_request::*;
-mod chime_email_event;
-pub use chime_email_event::*;
 mod chime_email_mailbox;
 pub use chime_email_mailbox::*;
 mod chime_email_mailbox_input;
