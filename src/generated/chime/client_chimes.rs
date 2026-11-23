@@ -97,6 +97,28 @@ impl Chimes {
             .await
     }
 
+    /// Retrieve effective, non-secret Chime delivery settings.
+    pub async fn settings(&self) -> Result<ChimeSettings> {
+        self.settings_with_options(RequestOptions::default()).await
+    }
+    /// Retrieve Chime delivery settings with per-request options.
+    pub async fn settings_with_options(&self, options: RequestOptions) -> Result<ChimeSettings> {
+        let body = serde_json::json!({});
+        self.client
+            .request_resource(
+                RequestSpec {
+                    method: "POST",
+                    path: "/chimes/settings",
+                    operation: "chimes.settings",
+                    field: Some("settings"),
+                    authenticated: true,
+                },
+                Some(&body),
+                options,
+            )
+            .await
+    }
+
     /// Schedule Chimes
     pub async fn schedule(&self, request: &ScheduleChimeRequest) -> Result<ScheduleCreationDetail> {
         self.schedule_with_options(request, RequestOptions::default())
